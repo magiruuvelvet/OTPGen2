@@ -7,7 +7,7 @@ using namespace bandit;
 
 go_bandit([]{
     describe("otptoken", []{
-        OTPToken token("label", "secret", 7, 50, OTPToken::TOTP, OTPToken::SHA1);
+        OTPToken token("label", "secret", 7, 50, 0, OTPToken::TOTP, OTPToken::SHA1);
         OTPToken::Data serialized;
 
         it("[serialize]", [&]{
@@ -38,6 +38,30 @@ go_bandit([]{
             AssertThat(deserialized.algorithm(), Equals(OTPToken::SHA1));
             AssertThat(deserialized.icon(), Equals(OTPToken::Data()));
             AssertThat(deserialized.icon().size(), Equals(0));
+        });
+
+        // test totp token at a fixed time, result must be always the same
+        it("[compute TOTP 1]", [&]{
+            OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP);
+            AssertThat(tkn.generate(1536573862), Equals(std::string("122810")));
+        });
+
+        // test totp token at a fixed time, result must be always the same
+        it("[compute TOTP 2]", [&]{
+            OTPToken tkn("", "XYZA123456KDDK83D28273", 7, 10, 0, OTPToken::TOTP); // Authy uses those values
+            AssertThat(tkn.generate(1536573862), Equals(std::string("8578249")));
+        });
+
+        // test hotp token with a fixed counter at 12
+        it("[compute HOTP]", [&]{
+            OTPToken tkn("", "XYZA123456KDDK83D", 6, 0, 12, OTPToken::HOTP);
+            AssertThat(tkn.generate(), Equals(std::string("534003")));
+        });
+
+        // test steam token at a fixed time, result must be always the same
+        it("[compute Steam]", [&]{
+            OTPToken tkn("", "ABC30WAY33X57CCBU3EAXGDDMX35S39M", OTPToken::Steam);
+            AssertThat(tkn.generate(1536573862), Equals(std::string("GQTTM")));
         });
     });
 });
