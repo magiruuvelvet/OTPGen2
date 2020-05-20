@@ -1,3 +1,9 @@
 [submodule "cmake/modules"]
 	path = cmake/modules
 	url = https://github.com/magiruuvelvet/shared-cmake-modules.git
+[submodule "libs/cryptopp/cryptopp"]
+	path = libs/cryptopp/cryptopp
+	url = https://github.com/weidai11/cryptopp.git
+[submodule "libs/bandit"]
+	path = libs/bandit
+	url = https://github.com/banditcpp/bandit.git
