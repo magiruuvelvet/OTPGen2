@@ -7,3 +7,6 @@
 [submodule "libs/bandit"]
 	path = libs/bandit
 	url = https://github.com/banditcpp/bandit.git
+[submodule "libs/cereal"]
+	path = libs/cereal
+	url = https://github.com/USCiLab/cereal.git
