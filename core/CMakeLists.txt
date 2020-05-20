@@ -6,6 +6,9 @@ message(STATUS "Configuring ${CURRENT_TARGET}...")
 
 CreateTarget(${CURRENT_TARGET} SHARED ${CURRENT_TARGET_NAME} 20)
 
+# cereal
+target_include_directories(${CURRENT_TARGET} SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/libs/cereal/include")
+
 # crypto++
 set(BUNDLED_CRYPTOPP OFF CACHE BOOL "Use the bundled crypto++ library.")
 if (BUNDLED_CRYPTOPP OR NOT PKG_CONFIG_FOUND)

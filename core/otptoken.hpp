@@ -9,6 +9,7 @@ class OTPToken
 {
 public:
 
+    // raw binary data container
     using Data = std::vector<char>;
 
     /**
@@ -29,9 +30,9 @@ public:
      */
     enum Type
     {
-        TOTP = 1,
-        HOTP = 2,
-        Steam = 3,
+        TOTP    = 1,
+        HOTP    = 2,
+        Steam   = 3,
     };
 
     /**
@@ -64,15 +65,56 @@ public:
     OTPToken(
             const std::string &label,
             const std::string &secret,
-            std::uint8_t &digits,
-            std::uint32_t &period,
+            const std::uint8_t &digits,
+            const std::uint32_t &period,
             Type type = TOTP,
             Algorithm algorithm = SHA1);
+
+    /**
+     * Constructs a new OTPToken from serialized data.
+     *
+     * If deserialization fails an invalid object in constructed.
+     *
+     * @see serialize
+     */
+    OTPToken(const Data &data);
 
     /**
      * Destructor
      */
     ~OTPToken();
+
+    /**
+     * Checks if the OTPToken instance is valid.
+     */
+    inline bool isValid() const
+    {
+        return !this->_secret.empty();
+    }
+
+    inline const auto &label() const
+    { return this->_label; }
+
+    inline const auto &secret() const
+    { return this->_secret; }
+
+    inline const auto &digits() const
+    { return this->_digits; }
+
+    inline const auto &period() const
+    { return this->_period; }
+
+    inline const auto &counter() const
+    { return this->_counter; }
+
+    inline const auto &type() const
+    { return this->_type; }
+
+    inline const auto &algorithm() const
+    { return this->_algorithm; }
+
+    inline const auto &icon() const
+    { return this->_icon; }
 
     /**
      * Returns the type name of the token as string for display.
@@ -83,7 +125,26 @@ public:
      */
     const std::string &typeName() const;
 
+    /**
+     * Serializes the object into a portable binary sequence.
+     *
+     * To construct a OTPToken object again use the data constructor.
+     */
+    const Data serialize() const;
+
 private:
+    OTPToken() {}
+
+    // Token Property Version (increment if changing properties)
+    static const std::uint32_t VERSION;
+
+    // Serialization Support
+    template<class Archive>
+    friend void save(Archive &archive, const OTPToken &token);
+    template<class Archive>
+    friend void load(Archive &archive, OTPToken &token);
+
+    // Token Properties
     std::string _label;          // label
     std::string _secret;         // token secret
     std::uint8_t _digits = 6;    // number of digits
@@ -91,7 +152,7 @@ private:
     std::uint32_t _counter = 0;  // HOTP token counter
     Type _type = TOTP;           // token type
     Algorithm _algorithm = SHA1; // token algorithm
-    Data icon;                   // raw icon data
+    Data _icon;                  // raw icon data
 };
 
 #endif // OTPTOKEN_HPP
