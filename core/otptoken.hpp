@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <ctime>
 
 class OTPToken
 {
@@ -67,6 +68,7 @@ public:
             const std::string &secret,
             const std::uint8_t &digits,
             const std::uint32_t &period,
+            const std::uint32_t &counter = 0,
             Type type = TOTP,
             Algorithm algorithm = SHA1);
 
@@ -131,6 +133,16 @@ public:
      * To construct a OTPToken object again use the data constructor.
      */
     const Data serialize() const;
+
+    /**
+     * Generate token from current time.
+     */
+    const std::string generate(Error *error = nullptr) const;
+
+    /**
+     * Generate token from the given time.
+     */
+    const std::string generate(const std::time_t &time, Error *error = nullptr) const;
 
 private:
     OTPToken() {}
