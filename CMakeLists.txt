@@ -63,11 +63,22 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib-static)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
-# pkg-config
-find_package(PkgConfig REQUIRED)
+# pkg-config (required to find shared dependencies)
+find_package(PkgConfig)
 if (NOT PKG_CONFIG_FOUND)
-    message(FATAL_ERROR "pkg-config executable not found on your system!")
+    message(WARNING "pkg-config executable not found on your system!")
+    message(WARNING "pkg-config based dependencies will not be found and bundled ones are used as fallback.")
 endif()
 
 # include dependencies
-add_subdirectory(libs)
+#add_subdirectory(libs)
+
+# shared core library (libotpgen)
+add_subdirectory(core)
+
+# unit tests
+set(ENABLE_TESTING OFF CACHE BOOL "Build the unit tests.")
+if (ENABLE_TESTING)
+    message(STATUS "Testing enabled.")
+    add_subdirectory(tests)
+endif()
