@@ -11,14 +11,16 @@ This repository uses git submodules! Make sure to perform an **recursive clone**
 
 ## CMake Build Options
 
- - `-DENABLE_TESTING` (default *OFF*): build unit tests
- - `-DBUNDLED_CRYPTOPP` (default *OFF*): use bundled crypto++ instead of shared
+ - `-DENABLE_TESTING` (default *OFF*): build the unit tests
+ - `-DBUNDLED_CRYPTOPP` (default *OFF*): use the bundled crypto++ library instead of the system shared one
+ - `-DBUNDLED_CEREAL` (default *ON*): use the bundled cereal header-only library instead of the system-wide copy
 
 ## Build Dependencies
 
  - C++20 compiler **required**
  - CMake 3.14 or higher **required** (I won't support older versions)
  - pkg-config **optimal** (to find some dependencies based on pkg-config)
+ - [cereal](https://github.com/USCiLab/cereal) **optimal** (this header-only library is bundled by default)
 
 ## Runtime Dependencies
 
