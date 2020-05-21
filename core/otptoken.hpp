@@ -92,7 +92,7 @@ public:
      */
     inline bool isValid() const
     {
-        return !this->_secret.empty();
+        return this->valid && !this->_secret.empty();
     }
 
     inline void setLabel(const std::string &label)
@@ -185,6 +185,9 @@ private:
     Type _type;             // token type
     Algorithm _algorithm;   // token algorithm
     Data _icon;             // raw icon data
+
+    // internal validity state for deserialized instances
+    bool valid = true;
 };
 
 #endif // OTPTOKEN_HPP

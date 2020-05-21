@@ -134,7 +134,7 @@ OTPToken::OTPToken(const Data &data)
     try {
         archive(self);
     }  catch (cereal::Exception &e) {
-        // TODO: report error
+        this->valid = false;
     }
 
     *this = self;
