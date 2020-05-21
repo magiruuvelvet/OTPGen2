@@ -6,7 +6,7 @@ message(STATUS "Configuring ${CURRENT_TARGET}...")
 
 CreateTarget(${CURRENT_TARGET} EXECUTABLE ${CURRENT_TARGET_NAME} 20)
 
-target_link_libraries(${CURRENT_TARGET} PUBLIC core_interface)
+target_link_libraries(${CURRENT_TARGET} PUBLIC core_interface fmt)
 
 target_include_directories(${CURRENT_TARGET} SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/libs/bandit")
 

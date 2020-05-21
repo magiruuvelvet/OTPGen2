@@ -71,7 +71,7 @@ if (NOT PKG_CONFIG_FOUND)
 endif()
 
 # include dependencies
-#add_subdirectory(libs)
+add_subdirectory(libs)
 
 # shared core library (libotpgen)
 add_subdirectory(core)

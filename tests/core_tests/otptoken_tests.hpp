@@ -10,6 +10,11 @@ go_bandit([]{
         OTPToken token("label", "secret", 7, 50, 0, OTPToken::TOTP, OTPToken::SHA1);
         OTPToken::Data serialized;
 
+        it("[equals]", [&]{
+            OTPToken other("label", "secret", 7, 50, 0, OTPToken::TOTP, OTPToken::SHA1);
+            AssertThat(token, Equals(other));
+        });
+
         it("[serialize]", [&]{
             serialized = token.serialize();
 
@@ -69,6 +74,12 @@ go_bandit([]{
         it("[compute Steam]", [&]{
             OTPToken tkn("", "ABC30WAY33X57CCBU3EAXGDDMX35S39M", OTPToken::Steam);
             AssertThat(tkn.generate(1536573862), Equals(std::string("GQTTM")));
+        });
+
+        it("[remaining validity]", [&]{
+            OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP, OTPToken::SHA1);
+            AssertThat(tkn.remainingTokenValidity(), IsLessThanOrEqualTo(31)); // +1 threshold
+            AssertThat(tkn.remainingTokenValidity(), IsGreaterThanOrEqualTo(0));
         });
     });
 });
