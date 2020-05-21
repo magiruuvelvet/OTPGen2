@@ -29,6 +29,8 @@ go_bandit([]{
         it("[deserialize]", [&]{
             OTPToken deserialized(serialized);
 
+            AssertThat(deserialized.isValid(), Equals(true));
+
             AssertThat(deserialized.label(), Equals("label"));
             AssertThat(deserialized.secret(), Equals("secret"));
             AssertThat(deserialized.digits(), Equals(7));
@@ -38,6 +40,11 @@ go_bandit([]{
             AssertThat(deserialized.algorithm(), Equals(OTPToken::SHA1));
             AssertThat(deserialized.icon(), Equals(OTPToken::Data()));
             AssertThat(deserialized.icon().size(), Equals(0));
+        });
+
+        it("[deserialize invalid]", [&]{
+            OTPToken deserialized(OTPToken::Data{0x01, 0x30, 0x30});
+            AssertThat(deserialized.isValid(), Equals(false));
         });
 
         // test totp token at a fixed time, result must be always the same

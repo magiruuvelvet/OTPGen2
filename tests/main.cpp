@@ -2,7 +2,7 @@
 
 #include <bandit/bandit.h>
 
-#include "core_tests/otptoken.hpp"
+#include "core_tests/otptoken_tests.hpp"
 
 int main(int argc, char **argv)
 {
