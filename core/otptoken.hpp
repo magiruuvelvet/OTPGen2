@@ -161,6 +161,35 @@ public:
      */
     const std::string generate(const std::time_t &time, Error *error = nullptr) const;
 
+    /**
+     * Calculates the remaining token validity from the current system time.
+     */
+    const std::uint64_t remainingTokenValidity() const;
+
+    /**
+     * equal operator
+     */
+    inline const bool operator== (const OTPToken &other) const
+    {
+        return
+            this->_label == other._label &&
+            this->_secret == other._secret &&
+            this->_digits == other._digits &&
+            this->_period == other._period &&
+            this->_counter == other._counter &&
+            this->_type == other._type &&
+            this->_algorithm == other._algorithm &&
+            this->_icon == other._icon;
+    }
+
+    /**
+     * does not equal operator
+     */
+    inline const bool operator!= (const OTPToken &other) const
+    {
+        return !this->operator== (other);
+    }
+
 private:
     OTPToken() {}
 

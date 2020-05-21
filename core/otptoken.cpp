@@ -171,6 +171,11 @@ const std::string OTPToken::generate(Error *error) const
 
 const std::string OTPToken::generate(const std::time_t &time, Error *error) const
 {
+    if (!this->isValid())
+    {
+        return {};
+    }
+
     if (!check_otp_length(this->_digits))
     {
         if (error)
@@ -235,6 +240,32 @@ const std::string OTPToken::generate(const std::time_t &time, Error *error) cons
     {
         return {};
     }
+}
+
+const std::uint64_t OTPToken::remainingTokenValidity() const
+{
+    if (this->_period == 0)
+    {
+        return 0;
+    }
+
+    // get remaining seconds since last minute
+    auto now = std::time(nullptr);
+    auto local = std::localtime(&now);
+
+    // calculate token validity with 1 second update threshold
+    auto sec_expired = local->tm_sec;
+    auto token_validity = ( static_cast<int>(this->_period) - sec_expired );
+    if (token_validity < 0)
+    {
+        token_validity = ( static_cast<int>(this->_period) - (sec_expired % static_cast<int>(this->_period)) ) + 1;
+    }
+    else
+    {
+        token_validity++;
+    }
+
+    return static_cast<std::uint64_t>(token_validity);
 }
 
 void OTPToken::set_defaults(const void *_def)
