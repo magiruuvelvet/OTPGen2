@@ -20,6 +20,7 @@ public:
     {
         Valid = 0,
         InvalidBase32Input,
+        InvalidBase64Input, // for Steam tokens
         InvalidAlgorithm,
         InvalidOTP,
         InvalidDigits,
@@ -94,27 +95,43 @@ public:
         return !this->_secret.empty();
     }
 
+    inline void setLabel(const std::string &label)
+    { this->_label = label; }
     inline const auto &label() const
     { return this->_label; }
 
+    inline void setSecret(const std::string &secret)
+    { this->_secret = secret; }
     inline const auto &secret() const
     { return this->_secret; }
 
+    inline void setDigits(const std::uint8_t &digits)
+    { this->_digits = digits; }
     inline const auto &digits() const
     { return this->_digits; }
 
+    inline void setPeriod(const std::uint32_t &period)
+    { this->_period = period; }
     inline const auto &period() const
     { return this->_period; }
 
+    inline void setCounter(const std::uint32_t &counter)
+    { this->_counter = counter; }
     inline const auto &counter() const
     { return this->_counter; }
 
+    inline void setType(const Type &type)
+    { this->_type = type; }
     inline const auto &type() const
     { return this->_type; }
 
+    inline void setAlgorithm(const Algorithm &algorithm)
+    { this->_algorithm = algorithm; }
     inline const auto &algorithm() const
     { return this->_algorithm; }
 
+    inline void setIcon(const Data &icon)
+    { this->_icon = icon; }
     inline const auto &icon() const
     { return this->_icon; }
 

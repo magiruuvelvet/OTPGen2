@@ -27,6 +27,44 @@ namespace
     const auto totp_defaults =  defaults{6, 30,  0, OTPToken::SHA1};
     const auto hotp_defaults =  defaults{6,  0,  0, OTPToken::SHA1};
     const auto steam_defaults = defaults{5, 30,  0, OTPToken::SHA1};
+
+    // steam token alphabet
+    static const std::string steam_alphabet = "23456789BCDFGHJKMNPQRTVWXY";
+
+    // converts Steam's base64 secrets into a compatible base32 string for the OTP generator
+    static const std::string convert_steam_base64_secret(const std::string &steam_base64_secret)
+    {
+        // input can't be empty
+        if (steam_base64_secret.empty())
+        {
+            return {};
+        }
+
+        std::string base32;
+
+        try {
+
+            // create an RFC 4648 base-32 encoder
+            // crypto++ uses DUDE by default which isn't TOTP compatible
+            auto encoder = new CryptoPP::Base32Encoder();
+            static const CryptoPP::byte ALPHABET[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+            static const CryptoPP::AlgorithmParameters params = CryptoPP::MakeParameters(
+                                                                CryptoPP::Name::EncodingLookupArray(),
+                                                                static_cast<const CryptoPP::byte*>(ALPHABET));
+            encoder->IsolatedInitialize(params);
+
+            encoder->Attach(new CryptoPP::StringSink(base32));
+
+            // decode and re-encode base-64 data into base-32
+            CryptoPP::StringSource src(steam_base64_secret, true,
+                new CryptoPP::Base64Decoder(encoder));
+
+        } catch (...) {
+            return {};
+        }
+
+        return base32;
+    }
 }
 
 OTPToken::OTPToken(
@@ -166,9 +204,7 @@ const std::string OTPToken::generate(const std::time_t &time, Error *error) cons
 
     else if (this->_type == Steam)
     {
-        static const std::string steam_alphabet = "23456789BCDFGHJKMNPQRTVWXY";
-
-        const auto timestamp = time / 30;
+        const auto timestamp = time / 30; // hardcode 30 seconds besides default handling
 
         const auto hmac = compute_hmac(this->_secret, timestamp, OTPToken::SHA1);
         if (hmac.empty())
@@ -183,7 +219,7 @@ const std::string OTPToken::generate(const std::time_t &time, Error *error) cons
         unsigned long offset = (hmac[SHA1_DIGEST_SIZE-1] & 0x0f);
         auto bin_code = compute_bin_code(hmac, offset);
 
-        char code[6];
+        char code[6]; // hardcode digit length besides default handing
         for (auto i = 0; i < 5; ++i)
         {
             int mod = bin_code % steam_alphabet.size();
