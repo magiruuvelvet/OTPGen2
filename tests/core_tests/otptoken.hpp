@@ -42,19 +42,19 @@ go_bandit([]{
 
         // test totp token at a fixed time, result must be always the same
         it("[compute TOTP 1]", [&]{
-            OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP);
+            OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(tkn.generate(1536573862), Equals(std::string("122810")));
         });
 
         // test totp token at a fixed time, result must be always the same
         it("[compute TOTP 2]", [&]{
-            OTPToken tkn("", "XYZA123456KDDK83D28273", 7, 10, 0, OTPToken::TOTP); // Authy uses those values
+            OTPToken tkn("", "XYZA123456KDDK83D28273", 7, 10, 0, OTPToken::TOTP, OTPToken::SHA1); // Authy uses those values
             AssertThat(tkn.generate(1536573862), Equals(std::string("8578249")));
         });
 
         // test hotp token with a fixed counter at 12
         it("[compute HOTP]", [&]{
-            OTPToken tkn("", "XYZA123456KDDK83D", 6, 0, 12, OTPToken::HOTP);
+            OTPToken tkn("", "XYZA123456KDDK83D", 6, 0, 12, OTPToken::HOTP, OTPToken::SHA1);
             AssertThat(tkn.generate(), Equals(std::string("534003")));
         });
 

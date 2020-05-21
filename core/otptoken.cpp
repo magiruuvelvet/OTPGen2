@@ -13,6 +13,20 @@ namespace
     const std::string str_totp    = "TOTP";
     const std::string str_hotp    = "HOTP";
     const std::string str_steam   = "Steam";
+
+    // token defaults config
+    struct defaults
+    {
+        std::uint8_t digits;
+        std::uint32_t period;
+        std::uint32_t counter;
+        OTPToken::Algorithm algorithm;
+    };
+
+    // token defaults
+    const auto totp_defaults =  defaults{6, 30,  0, OTPToken::SHA1};
+    const auto hotp_defaults =  defaults{6,  0,  0, OTPToken::SHA1};
+    const auto steam_defaults = defaults{5, 30,  0, OTPToken::SHA1};
 }
 
 OTPToken::OTPToken(
@@ -27,16 +41,14 @@ OTPToken::OTPToken(
 {
     switch (this->_type)
     {
-        case TOTP:
-            this->_counter = 0; // unused for TOTP
-            break;
-        case HOTP:
-            this->_period = 0; // unused for HOTP
-            break;
-        case Steam:
-            this->_digits = 5; // Steam tokens are 5 digits long
-            this->_algorithm = SHA1; // force algorithm to SHA1 for Steam
-            break;
+        case TOTP:  this->set_defaults(&totp_defaults);  break;
+        case HOTP:  this->set_defaults(&hotp_defaults);  break;
+        case Steam: this->set_defaults(&steam_defaults); break;
+    }
+
+    if (this->_type != Steam)
+    {
+        this->_algorithm = algorithm;
     }
 }
 
@@ -49,10 +61,28 @@ OTPToken::OTPToken(const std::string &label,
         Algorithm algorithm)
     : OTPToken(label, secret, type, algorithm)
 {
-    // overwrite after default initialization
+    // overwrite values after default initialization, if applicable
+
+    // don't change anything when OTP type is Steam
+    if (this->_type == Steam)
+    {
+        return;
+    }
+
+    // every token type can have a custom digit length
     this->_digits = digits;
-    this->_period = period;
-    this->_counter = counter;
+
+    // only non-HOTP tokens can have a period
+    if (this->_type != HOTP)
+    {
+        this->_period = period;
+    }
+
+    // only HOTP tokens can have a counter
+    if (this->_type == HOTP)
+    {
+        this->_counter = counter;
+    }
 }
 
 OTPToken::OTPToken(const Data &data)
@@ -169,4 +199,13 @@ const std::string OTPToken::generate(const std::time_t &time, Error *error) cons
     {
         return {};
     }
+}
+
+void OTPToken::set_defaults(const void *_def)
+{
+    const auto *def = static_cast<const defaults*>(_def);
+    this->_digits = def->digits;
+    this->_period = def->period;
+    this->_counter = def->counter;
+    this->_algorithm = def->algorithm;
 }

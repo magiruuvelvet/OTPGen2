@@ -156,15 +156,18 @@ private:
     template<class Archive>
     friend void load(Archive &archive, OTPToken &token);
 
+    // internal function to set token type defaults
+    void set_defaults(const void *def);
+
     // Token Properties
-    std::string _label;          // label
-    std::string _secret;         // token secret
-    std::uint8_t _digits = 6;    // number of digits
-    std::uint32_t _period = 30;  // validity of token
-    std::uint32_t _counter = 0;  // HOTP token counter
-    Type _type = TOTP;           // token type
-    Algorithm _algorithm = SHA1; // token algorithm
-    Data _icon;                  // raw icon data
+    std::string _label;     // label
+    std::string _secret;    // token secret
+    std::uint8_t _digits;   // number of digits
+    std::uint32_t _period;  // validity of token
+    std::uint32_t _counter; // HOTP token counter
+    Type _type;             // token type
+    Algorithm _algorithm;   // token algorithm
+    Data _icon;             // raw icon data
 };
 
 #endif // OTPTOKEN_HPP
