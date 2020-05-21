@@ -76,6 +76,9 @@ add_subdirectory(libs)
 # shared core library (libotpgen)
 add_subdirectory(core)
 
+# Qt frontend
+add_subdirectory(gui)
+
 # unit tests
 set(ENABLE_TESTING OFF CACHE BOOL "Build the unit tests.")
 if (ENABLE_TESTING)
