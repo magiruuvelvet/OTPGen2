@@ -81,5 +81,10 @@ go_bandit([]{
             AssertThat(tkn.remainingTokenValidity(), IsLessThanOrEqualTo(31)); // +1 threshold
             AssertThat(tkn.remainingTokenValidity(), IsGreaterThanOrEqualTo(0));
         });
+
+        it("[invalid secret]", [&]{
+            OTPToken tkn("", "_", OTPToken::TOTP, OTPToken::SHA1);
+            AssertThat(tkn.canGenerateTokens(), Equals(false));
+        });
     });
 });
