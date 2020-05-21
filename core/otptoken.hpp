@@ -88,11 +88,21 @@ public:
     ~OTPToken();
 
     /**
-     * Checks if the OTPToken instance is valid.
+     * Checks if the OTPToken instance is considered valid
+     * and has all data required to generate tokens.
      */
     inline bool isValid() const
     {
         return this->valid && !this->_secret.empty();
+    }
+
+    /**
+     * Checks if the OTPToken instance can generate non-empty tokens.
+     * This method also calls @see isValid internally.
+     */
+    inline bool canGenerateTokens() const
+    {
+        return !this->generate().empty();
     }
 
     inline void setLabel(const std::string &label)
