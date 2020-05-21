@@ -1,0 +1,12 @@
+# fmt
+set(BUNDLED_LIBFMT ON CACHE BOOL "Use the bundled libfmt.")
+if (BUNDLED_LIBFMT)
+    message(STATUS "Building with bundled libfmt")
+    message(STATUS "Configuring bundled libfmt...")
+    add_subdirectory("${PROJECT_SOURCE_DIR}/libs/fmt" "${PROJECT_BINARY_DIR}/libs/fmt" EXCLUDE_FROM_ALL)
+    message(STATUS "Configured bundled libfmt.")
+else()
+    message(STATUS "Building with shared libfmt")
+    find_package(fmt 6.2 REQUIRED)
+    message(STATUS "Found libfmt ${fmt_VERSION}")
+endif()

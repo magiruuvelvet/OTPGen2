@@ -10,3 +10,6 @@
 [submodule "libs/cereal"]
 	path = libs/cereal
 	url = https://github.com/USCiLab/cereal.git
+[submodule "libs/fmt"]
+	path = libs/fmt
+	url = https://github.com/fmtlib/fmt.git
