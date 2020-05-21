@@ -13,6 +13,7 @@ This repository uses git submodules! Make sure to perform an **recursive clone**
 
  - `-DENABLE_TESTING` (default *OFF*): build the unit tests
  - `-DBUNDLED_CRYPTOPP` (default *OFF*): use the bundled crypto++ library instead of the system shared one
+ - `-DBUNDLED_LIBFMT` (default *ON*): use the bundled libfmt instead of the system shared one
  - `-DBUNDLED_CEREAL` (default *ON*): use the bundled cereal header-only library instead of the system-wide copy
 
 ## Build Dependencies
@@ -28,4 +29,5 @@ Most runtime dependencies are also bundled. CMake will prefer shared versions of
 when it finds them and are compatible. Otherwise it falls back to the bundled versions.
 Take a close look at the CMake configure output to get an insight what libraries are being used.
 
- - `crypto++` 8.2 (*bundled or shared*)
+ - `crypto++` 8.2+ (*bundled or shared*)
+ - `libfmt` 6.2+ (*bundled or shared*)
