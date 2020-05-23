@@ -1,6 +1,14 @@
 #include "otptokenwidget.hpp"
 
+#include "labelwithicondelegate.hpp"
+#include "tokendelegate.hpp"
+
 #include <QHeaderView>
+
+#define COLUMN_ACTIONS  0
+#define COLUMN_TYPE     1
+#define COLUMN_LABEL    2
+#define COLUMN_TOKEN    3
 
 OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     : QTableWidget(parent),
@@ -25,6 +33,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     // selection
     this->setSelectionBehavior(QTableView::SelectRows);
     this->setSelectionMode(QTableView::NoSelection);
+    this->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     // disable focus on widget itself, delegates should still be able to focus
     this->setFocusPolicy(Qt::NoFocus);
@@ -65,6 +74,36 @@ void OTPTokenWidget::refresh()
     // create cell widgets
     for (auto i = 0; i < model->rowCount(); ++i)
     {
+        const OTPToken *token = reinterpret_cast<const OTPToken*>(model->data(i, 0, Qt::UserRole).value<std::uintptr_t>());
+
+        OTPTokenRowContainer rowContainer;
+        rowContainer.obj = token;
+
         // TODO: create cell widgets here
+
+        // token display type
+        // TODO: type icons like in version 1
+        this->setCellWidget(i, COLUMN_TYPE,
+                            new LabelWithIconDelegate(model->data(i, COLUMN_TYPE).toString(), "", QSize(30, 30), this));
+
+        // token label and icon
+        const QByteArray icon(token->icon().data(), token->icon().size());
+        this->setCellWidget(i, COLUMN_LABEL,
+                            new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(30, 30), this));
+
+        // generated token
+        this->setCellWidget(i, COLUMN_TOKEN,
+                            new TokenDelegate(token, this));
+
+        // setup row pointers for easy access across the entire row
+        auto wtype = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TYPE));
+        auto wlabel = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_LABEL));
+        auto wtoken = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TOKEN));
+        rowContainer.type = wtype;
+        rowContainer.label = wlabel;
+        rowContainer.token = wtoken;
+        wtype->setRowContainer(rowContainer);
+        wlabel->setRowContainer(rowContainer);
+        wtoken->setRowContainer(rowContainer);
     }
 }

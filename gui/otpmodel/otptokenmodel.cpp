@@ -31,7 +31,7 @@ int OTPTokenModel::columnCount(const QModelIndex &parent) const
     return 4;
 }
 
-QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
+QVariant OTPTokenModel::data(int row, int column, int role) const
 {
     if (!tokens)
     {
@@ -41,7 +41,7 @@ QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
     // return basic display data about the token
     if (role == Qt::DisplayRole)
     {
-        switch (index.column())
+        switch (column)
         {
             // [Show/Copy]
             case 0:
@@ -49,11 +49,11 @@ QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
 
             // [Type]
             case 1:
-                return QString::fromStdString(tokens->at(index.row()).typeName());
+                return QString::fromStdString(tokens->at(row).typeName());
 
             // [Icon/Label]
             case 2:
-                return QString::fromStdString(tokens->at(index.row()).label());
+                return QString::fromStdString(tokens->at(row).label());
 
             // [Token]
             case 3:
@@ -64,7 +64,7 @@ QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
     // return pointer address to the OTPToken instance
     else if (role == Qt::UserRole)
     {
-        return QVariant::fromValue(reinterpret_cast<std::uintptr_t>(&tokens->at(index.row())));
+        return QVariant::fromValue(reinterpret_cast<std::uintptr_t>(&tokens->at(row)));
     }
 
     return {};
@@ -76,10 +76,10 @@ QVariant OTPTokenModel::headerData(int section, Qt::Orientation orientation, int
     {
         switch (section)
         {
-            case 0: return QString();
-            case 1: return tr("Type", "otp");  // OTP type: TOTP, HOTP, Steam
-            case 2: return tr("Label", "otp"); // OTP token label (example: GitHub)
-            case 3: return tr("Token", "otp"); // generated OTP token code (example: 123456)
+            case 0: return tr("Actions", "otp"); // actions (show token, copy to clipboard) for current token
+            case 1: return tr("Type", "otp");    // OTP type: TOTP, HOTP, Steam
+            case 2: return tr("Label", "otp");   // OTP token label (example: GitHub)
+            case 3: return tr("Token", "otp");   // generated OTP token code (example: 123456)
         }
     }
 

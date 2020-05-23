@@ -23,13 +23,19 @@ public:
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
+    QVariant data(int row, int column, int role = Qt::DisplayRole) const;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
 
     // disable editing capabilities
     inline bool setData(const QModelIndex &index, const QVariant &value, int role = Qt::EditRole) override
     {
         return false;
+    }
+
+    // QModelIndex is inaccessible without using an actual view class
+    inline QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
+    {
+        return {};
     }
 
 private:
