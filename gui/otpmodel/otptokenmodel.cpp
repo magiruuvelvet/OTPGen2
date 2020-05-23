@@ -1,9 +1,15 @@
 #include "otptokenmodel.hpp"
 
-OTPTokenModel::OTPTokenModel(std::vector<OTPToken> *tokens, QObject *parent)
+OTPTokenModel::OTPTokenModel(const std::vector<OTPToken> *tokens, QObject *parent)
     : QAbstractTableModel(parent),
       tokens(tokens)
 {
+}
+
+void OTPTokenModel::refresh()
+{
+    this->beginResetModel();
+    this->endResetModel();
 }
 
 int OTPTokenModel::rowCount(const QModelIndex &parent) const
@@ -32,6 +38,7 @@ QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
         return {};
     }
 
+    // return basic display data about the token
     if (role == Qt::DisplayRole)
     {
         switch (index.column())
@@ -52,6 +59,12 @@ QVariant OTPTokenModel::data(const QModelIndex &index, int role) const
             case 3:
                 return {};
         }
+    }
+
+    // return pointer address to the OTPToken instance
+    else if (role == Qt::UserRole)
+    {
+        return QVariant::fromValue(reinterpret_cast<std::uintptr_t>(&tokens->at(index.row())));
     }
 
     return {};
