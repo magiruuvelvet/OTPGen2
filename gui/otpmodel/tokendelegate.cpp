@@ -26,7 +26,7 @@ TokenDelegate::TokenDelegate(const OTPToken *tokenObj, QWidget *parent)
     }
 
     // setup progress bar for token validity
-    this->_timerBar = std::make_shared<QProgressBar>();
+    this->_timerBar = std::make_shared<QProgressBar>(this);
     this->_timerBar->setVisible(false);
     if (tokenObj->type() != OTPToken::HOTP)
     {
@@ -50,7 +50,7 @@ TokenDelegate::TokenDelegate(const OTPToken *tokenObj, QWidget *parent)
     }
 
     // generated token
-    this->_generatedToken = std::make_shared<QLineEdit>();
+    this->_generatedToken = std::make_shared<QLineEdit>(this);
     this->_generatedToken->setReadOnly(true);
     this->_generatedToken->setFrame(false);
     this->_generatedToken->setAutoFillBackground(true);
@@ -70,6 +70,15 @@ TokenDelegate::TokenDelegate(const OTPToken *tokenObj, QWidget *parent)
     {
         this->restartTimer();
     }
+
+    // setup size policies for hidden widgets
+    auto timerBarSizePolicy = this->_timerBar->sizePolicy();
+    timerBarSizePolicy.setRetainSizeWhenHidden(true);
+    this->_timerBar->setSizePolicy(timerBarSizePolicy);
+
+    auto generatedTokenSizePolicy = this->_generatedToken->sizePolicy();
+    generatedTokenSizePolicy.setRetainSizeWhenHidden(true);
+    this->_generatedToken->setSizePolicy(generatedTokenSizePolicy);
 
     // hide generated tokens by default
     this->setGeneratedTokenVisible(false);
