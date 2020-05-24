@@ -244,7 +244,7 @@ const std::string OTPToken::generate(const std::time_t &time, Error *error) cons
 
 const std::uint64_t OTPToken::remainingTokenValidity() const
 {
-    if (this->_period == 0)
+    if (this->_period == 0 || this->_type == HOTP)
     {
         return 0;
     }
