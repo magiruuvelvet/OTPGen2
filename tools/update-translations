@@ -1,0 +1,6 @@
+#!/bin/sh
+
+exec lupdate -no-obsolete \
+    gui/**/**.cpp \
+    gui/**/**.hpp \
+    -ts gui/i18n/*.ts
