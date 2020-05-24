@@ -14,6 +14,10 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}"
     "${PROJECT_SOURCE_DIR}/cmake/modules"
     "${PROJECT_SOURCE_DIR}/cmake/libs")
 
+# Ensure we are building out of source
+include(MacroEnsureOutOfSourceBuild)
+EnsureOutOfSourceBuild()
+
 # Target creation macro
 include(CreateTarget)
 
