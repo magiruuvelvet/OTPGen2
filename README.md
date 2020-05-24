@@ -16,6 +16,7 @@ This repository uses git submodules! Make sure to perform an **recursive clone**
  - `-DBUNDLED_CRYPTOPP` (default *OFF*): use the bundled crypto++ library instead of the system shared one
  - `-DBUNDLED_LIBFMT` (default *ON*): use the bundled libfmt instead of the system shared one
  - `-DBUNDLED_CEREAL` (default *ON*): use the bundled cereal header-only library instead of the system-wide copy
+ - `-DQRCODE_DECODING_SUPPORT` (default *ON*): add support for decoding QR code images (requires `zbar` and `Magick++`)
 
 ## Build Dependencies
 
@@ -34,3 +35,8 @@ Take a close look at the CMake configure output to get an insight what libraries
  - `Qt` 5.12 or higher (*shared-only*)
  - `crypto++` 8.2+ (*bundled or shared*)
  - `libfmt` 6.2+ (*bundled or shared*)
+
+#### QR code decoding (optimal feature)
+
+ - `zbar` 0.23+ (*shared-only*)
+ - `Magick++` (ImageMagick C++ library) (*shared-only*)
