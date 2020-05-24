@@ -51,6 +51,23 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     }
     this->setHorizontalHeaderLabels(headerLabels);
 
+    // setup minimum width constraints for columns
+    static const std::vector<int> minSizeContraints = {
+        70, 90, 150, 100,
+    };
+    connect(this->horizontalHeader(), &QHeaderView::sectionResized, this, [&](int logicalIndex, int oldSize, int newSize) {
+        if (newSize < minSizeContraints.at(logicalIndex))
+        {
+            this->setColumnWidth(logicalIndex, minSizeContraints.at(logicalIndex));
+        }
+    });
+
+    // set initial column widths
+    for (auto i = 0; i < this->columnCount(); ++i)
+    {
+        this->setColumnWidth(i, minSizeContraints.at(i));
+    }
+
     // populate rows
     this->refresh();
 }
