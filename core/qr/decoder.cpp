@@ -9,8 +9,6 @@
 #include <memory>
 #endif
 
-#include <fmt/printf.h>
-
 namespace
 {
 
@@ -41,9 +39,9 @@ const std::string QRCode::decode(const std::string &filePath, Error *error)
         return {};
     }
 
-    set_error(error, NoError);
-
 #if QRCODE_DECODING_SUPPORT
+
+    set_error(error, NoError);
 
     // read image using ImageMagick
     std::unique_ptr<Magick::Image> magick;
