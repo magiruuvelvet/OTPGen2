@@ -5,6 +5,7 @@
 #include "tokendelegate.hpp"
 
 #include <QHeaderView>
+#include <QRegularExpression>
 
 #define COLUMN_ACTIONS  0
 #define COLUMN_TYPE     1
@@ -72,6 +73,40 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     this->refresh();
 }
 
+bool OTPTokenWidget::setFilter(const QString &filter)
+{
+    this->filterPattern = filter.simplified();
+
+    if (this->filterPattern.isEmpty())
+    {
+        this->makeAllRowsVisible();
+        return true;
+    }
+
+    const auto filterRegex = QRegularExpression(this->filterPattern, QRegularExpression::CaseInsensitiveOption);
+
+    if (!filterRegex.isValid())
+    {
+        this->makeAllRowsVisible();
+        return false;
+    }
+
+    for (auto i = 0; i < this->rowCount(); ++i)
+    {
+        bool match = false;
+        const auto type = model->data(i, COLUMN_TYPE).toString();
+        const auto label = model->data(i, COLUMN_LABEL).toString();
+        if (filterRegex.match(type).hasMatch() ||
+            filterRegex.match(label).hasMatch())
+        {
+            match = true;
+        }
+        this->setRowHidden(i, !match);
+    }
+
+    return true;
+}
+
 void OTPTokenWidget::refresh()
 {
     // clear previous content
@@ -136,5 +171,16 @@ void OTPTokenWidget::refresh()
         wtype->setRowContainer(rowContainer);
         wlabel->setRowContainer(rowContainer);
         wtoken->setRowContainer(rowContainer);
+    }
+
+    // reapply the current filter
+    this->setFilter(this->filterPattern);
+}
+
+void OTPTokenWidget::makeAllRowsVisible()
+{
+    for (auto i = 0; i < this->rowCount(); ++i)
+    {
+        this->setRowHidden(i, false);
     }
 }
