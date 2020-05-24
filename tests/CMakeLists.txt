@@ -10,4 +10,6 @@ target_link_libraries(${CURRENT_TARGET} PRIVATE core_interface fmt)
 
 target_include_directories(${CURRENT_TARGET} SYSTEM PRIVATE "${PROJECT_SOURCE_DIR}/libs/bandit")
 
+target_compile_definitions(${CURRENT_TARGET} PRIVATE "-DTEST_ASSETS_DIR=\"${PROJECT_SOURCE_DIR}/tests/test_assets\"")
+
 message(STATUS "Configured ${CURRENT_TARGET}.")
