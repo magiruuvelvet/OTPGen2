@@ -1,6 +1,8 @@
 <RCC>
-    <qresource prefix="/i18n">
-        <file>ja_JP.qm</file>
-        <file>de.qm</file>
+    <qresource prefix="/i18n" lang="ja_JP">
+        <file alias="lang.qm">ja_JP.qm</file>
+    </qresource>
+    <qresource prefix="/i18n" lang="de">
+        <file alias="lang.qm">de.qm</file>
     </qresource>
 </RCC>
