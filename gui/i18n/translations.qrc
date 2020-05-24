@@ -1,4 +1,6 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/i18n">
+        <file>ja_JP.qm</file>
+        <file>de.qm</file>
     </qresource>
 </RCC>
