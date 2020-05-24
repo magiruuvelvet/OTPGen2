@@ -1,5 +1,6 @@
 #include "otptokenwidget.hpp"
 
+#include "actionsdelegate.hpp"
 #include "labelwithicondelegate.hpp"
 #include "tokendelegate.hpp"
 
@@ -79,12 +80,22 @@ void OTPTokenWidget::refresh()
         OTPTokenRowContainer rowContainer;
         rowContainer.obj = token;
 
-        // TODO: create cell widgets here
+        // token actions
+        this->setCellWidget(i, COLUMN_ACTIONS,
+                            new ActionsDelegate(token, this));
 
         // token display type
-        // TODO: type icons like in version 1
+        QString typeIcon;
+        switch (token->type())
+        {
+            case OTPToken::TOTP: typeIcon = ":/clock.svgz"; break;
+            case OTPToken::Steam: typeIcon = ":/logos/steam.svgz"; break;
+        }
+
         this->setCellWidget(i, COLUMN_TYPE,
-                            new LabelWithIconDelegate(model->data(i, COLUMN_TYPE).toString(), "", QSize(30, 30), this));
+                            new LabelWithIconDelegate(model->data(i, COLUMN_TYPE).toString(), typeIcon, QSize(16, 16), this));
+        this->cellWidget(i, COLUMN_TYPE)->layout()->setSpacing(8);
+        this->cellWidget(i, COLUMN_TYPE)->layout()->setContentsMargins(8, 0, 8, 0);
 
         // token label and icon
         const QByteArray icon(token->icon().data(), token->icon().size());
@@ -96,12 +107,15 @@ void OTPTokenWidget::refresh()
                             new TokenDelegate(token, this));
 
         // setup row pointers for easy access across the entire row
+        auto waction = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_ACTIONS));
         auto wtype = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TYPE));
         auto wlabel = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_LABEL));
         auto wtoken = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TOKEN));
+        rowContainer.action = waction;
         rowContainer.type = wtype;
         rowContainer.label = wlabel;
         rowContainer.token = wtoken;
+        waction->setRowContainer(rowContainer);
         wtype->setRowContainer(rowContainer);
         wlabel->setRowContainer(rowContainer);
         wtoken->setRowContainer(rowContainer);

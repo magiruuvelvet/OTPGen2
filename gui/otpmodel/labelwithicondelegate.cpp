@@ -1,5 +1,7 @@
 #include "labelwithicondelegate.hpp"
 
+#include <QFile>
+
 LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QByteArray &iconData, const QSize &iconSize, QWidget *parent)
     : OTPBaseWidget(parent),
       _label(label),
@@ -12,7 +14,7 @@ LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QByteAr
     }
 
     this->_layout = std::make_shared<QHBoxLayout>();
-    this->_layout->setSpacing(10);
+    this->_layout->setSpacing(12);
     this->_layout->setContentsMargins(3, 0, 3, 0);
     this->_layout->setSizeConstraint(QLayout::SetMaximumSize);
 
@@ -35,4 +37,21 @@ LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QByteAr
     this->_layout->addWidget(this->_labelWidget.get(), 1, Qt::AlignLeft | Qt::AlignVCenter);
 
     this->setLayout(this->_layout.get());
+}
+
+LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QString &iconPath, const QSize &iconSize, QWidget *parent)
+    : LabelWithIconDelegate(label, QByteArray(), iconSize, parent)
+{
+    if (!iconPath.isEmpty())
+    {
+        QFile iconFile(iconPath);
+        if (iconFile.open(QIODevice::ReadOnly))
+        {
+            QImage icon;
+            if (icon.loadFromData(iconFile.readAll()))
+            {
+                this->_iconWidget->setPixmap(QPixmap::fromImage(icon).scaled(_iconSize, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            }
+        }
+    }
 }

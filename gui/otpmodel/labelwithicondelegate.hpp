@@ -21,6 +21,12 @@ public:
             const QSize &iconSize = QSize(),
             QWidget *parent = nullptr);
 
+    LabelWithIconDelegate(
+            const QString &label,
+            const QString &iconPath,
+            const QSize &iconSize = QSize(),
+            QWidget *parent = nullptr);
+
 private:
     QString _label;
     QByteArray _icon;

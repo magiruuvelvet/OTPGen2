@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>app-icon.svgz</file>
+        <file>tray-icon.png</file>
+        <file>clock.svgz</file>
+        <file>copy-content.svgz</file>
+        <file>logos/andotp.svgz</file>
+        <file>logos/authy.svgz</file>
+        <file>logos/steam.svgz</file>
+    </qresource>
+</RCC>

@@ -21,6 +21,10 @@ set(CMAKE_AUTOMOC ON)
 message(STATUS "Enabling Qt autorcc...")
 set(CMAKE_AUTORCC ON)
 
+# embedded assets
+qt5_add_resources(RCC_SOURCES "${PROJECT_SOURCE_DIR}/gui/assets/EmbeddedAssets.qrc")
+add_custom_target(GenerateEmbeddedAssets DEPENDS ${RCC_SOURCES})
+
 # ui translations
 set(BUILD_TRANSLATIONS OFF CACHE BOOL "Build the UI translations.")
 if (BUILD_TRANSLATIONS AND Qt5LinguistTools_FOUND)
@@ -54,14 +58,19 @@ if (BUILD_TRANSLATIONS AND Qt5LinguistTools_FOUND)
 elseif (BUILD_TRANSLATIONS)
     message(WARNING "Building of translations requested but no Qt linguist tools found.")
     message(WARNING "Translations will not be built.")
+    set(RCC_TRANSLATION_SOURCES "")
     add_custom_target(GenerateEmbeddedTranslations)
 else()
+    set(RCC_TRANSLATION_SOURCES "")
     add_custom_target(GenerateEmbeddedTranslations)
 endif()
 
 # target must be created AFTER Qt cmake was run and automoc enabled
 CreateTarget(${CURRENT_TARGET} EXECUTABLE ${CURRENT_TARGET_NAME} 20)
-add_dependencies(${CURRENT_TARGET} GenerateEmbeddedTranslations)
+
+# append resource files
+add_dependencies(${CURRENT_TARGET} GenerateEmbeddedTranslations GenerateEmbeddedAssets)
+set_property(TARGET ${CURRENT_TARGET} APPEND PROPERTY SOURCES ${RCC_SOURCES} ${RCC_TRANSLATION_SOURCES})
 
 # Qt deprecated warnings
 target_compile_definitions(${CURRENT_TARGET} PRIVATE -DQT_DEPRECATED_WARNINGS)

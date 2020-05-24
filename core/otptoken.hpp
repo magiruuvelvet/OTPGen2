@@ -173,6 +173,9 @@ public:
 
     /**
      * Calculates the remaining token validity from the current system time.
+     * The returned time is in seconds.
+     *
+     * This function always returns 0 on HOTP tokens.
      */
     const std::uint64_t remainingTokenValidity() const;
 
