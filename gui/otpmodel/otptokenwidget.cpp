@@ -6,6 +6,7 @@
 
 #include <QHeaderView>
 #include <QRegularExpression>
+#include <QEvent>
 
 #define COLUMN_ACTIONS  0
 #define COLUMN_TYPE     1
@@ -45,12 +46,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
 
     // setup the model properties
     this->setColumnCount(model->columnCount());
-    QStringList headerLabels;
-    for (auto i = 0; i < model->columnCount(); ++i)
-    {
-        headerLabels.append(model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString());
-    }
-    this->setHorizontalHeaderLabels(headerLabels);
+    this->updateHeaderLabels();
 
     // setup minimum width constraints for columns
     static const std::vector<int> minSizeContraints = {
@@ -183,4 +179,25 @@ void OTPTokenWidget::makeAllRowsVisible()
     {
         this->setRowHidden(i, false);
     }
+}
+
+void OTPTokenWidget::updateHeaderLabels()
+{
+    QStringList headerLabels;
+    for (auto i = 0; i < model->columnCount(); ++i)
+    {
+        headerLabels.append(model->headerData(i, Qt::Horizontal, Qt::DisplayRole).toString());
+    }
+    this->setHorizontalHeaderLabels(headerLabels);
+}
+
+void OTPTokenWidget::changeEvent(QEvent *event)
+{
+    if (event->type() == QEvent::LanguageChange)
+    {
+        this->updateHeaderLabels();
+        model->refresh();
+    }
+
+    QTableWidget::changeEvent(event);
 }

@@ -35,7 +35,7 @@ public:
     // QModelIndex is inaccessible without using an actual view class
     inline QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override
     {
-        return {};
+        return this->data(index.row(), index.column(), role);
     }
 
 private:

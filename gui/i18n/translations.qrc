@@ -1,4 +1,11 @@
 <RCC>
+    <!-- all translations with direct access -->
+    <qresource prefix="/i18n">
+        <file>ja_JP.qm</file>
+        <file>de.qm</file>
+    </qresource>
+
+    <!-- alias translations for language autodetect -->
     <qresource prefix="/i18n" lang="ja_JP">
         <file alias="lang.qm">ja_JP.qm</file>
     </qresource>

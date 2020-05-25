@@ -20,11 +20,15 @@ public:
      */
     bool setFilter(const QString &filter = QString());
 
+protected:
+    void changeEvent(QEvent *event);
+
 private:
     OTPTokenModel *model = nullptr;
 
     void refresh();
     void makeAllRowsVisible();
+    void updateHeaderLabels();
 
     QString filterPattern;
 };
