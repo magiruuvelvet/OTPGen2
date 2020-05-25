@@ -1,5 +1,6 @@
 #include <QApplication>
 #include <QTranslator>
+#include <QIcon>
 
 int main(int argc, char **argv)
 {
