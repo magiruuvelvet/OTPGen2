@@ -24,7 +24,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
 
     // set fixed row height
     this->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    this->verticalHeader()->setDefaultSectionSize(25);
+    this->verticalHeader()->setDefaultSectionSize(this->rowHeight);
 
     // drag and drop of entire rows to change the order
     this->verticalHeader()->setSectionsMovable(true);
@@ -103,6 +103,13 @@ bool OTPTokenWidget::setFilter(const QString &filter)
     return true;
 }
 
+void OTPTokenWidget::setRowHeight(int height)
+{
+    this->rowHeight = height;
+    this->verticalHeader()->setDefaultSectionSize(this->rowHeight);
+    this->refresh();
+}
+
 void OTPTokenWidget::refresh()
 {
     // clear previous content
@@ -146,9 +153,11 @@ void OTPTokenWidget::refresh()
         this->cellWidget(i, COLUMN_TYPE)->layout()->setContentsMargins(8, 0, 8, 0);
 
         // token label and icon
+        unsigned int iconSize = this->rowHeight + 5;
+
         const QByteArray icon(token->icon().data(), token->icon().size());
         this->setCellWidget(i, COLUMN_LABEL,
-                            new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(30, 30), this));
+                            new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(iconSize, iconSize), this));
 
         // generated token
         this->setCellWidget(i, COLUMN_TOKEN,

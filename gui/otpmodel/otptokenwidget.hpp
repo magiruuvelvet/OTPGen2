@@ -20,6 +20,11 @@ public:
      */
     bool setFilter(const QString &filter = QString());
 
+    /**
+     * Sets the height of rows. This also affects icon sizes.
+     */
+    void setRowHeight(int height);
+
 protected:
     void changeEvent(QEvent *event);
 
@@ -31,6 +36,7 @@ private:
     void updateHeaderLabels();
 
     QString filterPattern;
+    int rowHeight = 25;
 };
 
 #endif // OTPTOKENWIDGET_HPP

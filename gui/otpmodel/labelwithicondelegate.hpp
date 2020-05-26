@@ -7,6 +7,7 @@
 #include <QLabel>
 #include <QString>
 #include <QByteArray>
+#include <QImage>
 
 #include <memory>
 
@@ -27,10 +28,14 @@ public:
             const QSize &iconSize = QSize(),
             QWidget *parent = nullptr);
 
+protected:
+    void resizeEvent(QResizeEvent *event);
+
 private:
     QString _label;
     QByteArray _icon;
     QSize _iconSize;
+    QImage _processedIcon;
 
     std::shared_ptr<QHBoxLayout> _layout;
     std::shared_ptr<QLabel> _labelWidget;
