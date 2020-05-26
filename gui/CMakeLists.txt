@@ -12,6 +12,8 @@ find_package(Qt5LinguistTools)
 message(STATUS "Qt version: ${Qt5Core_VERSION}")
 message(STATUS "Linguist tools found: ${Qt5LinguistTools_FOUND}")
 
+set(CONFIG_STATUS_QT "${Qt5Core_VERSION} (system)" CACHE INTERNAL "")
+
 # Qt automoc
 message(STATUS "Enabling Qt automoc...")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -60,14 +62,18 @@ if (BUILD_TRANSLATIONS AND Qt5LinguistTools_FOUND)
     qt5_add_resources(RCC_TRANSLATION_SOURCES "${CMAKE_CURRENT_BINARY_DIR}/i18n/translations.qrc")
     add_custom_target(GenerateEmbeddedTranslations DEPENDS ${RCC_TRANSLATION_SOURCES})
 
+    set(CONFIG_STATUS_TRANSLATIONS "enabled" CACHE INTERNAL "")
+
 elseif (BUILD_TRANSLATIONS)
     message(WARNING "Building of translations requested but no Qt linguist tools found.")
     message(WARNING "Translations will not be built.")
     set(RCC_TRANSLATION_SOURCES "")
     add_custom_target(GenerateEmbeddedTranslations)
+    set(CONFIG_STATUS_TRANSLATIONS "disabled automatically (missing tools)" CACHE INTERNAL "")
 else()
     set(RCC_TRANSLATION_SOURCES "")
     add_custom_target(GenerateEmbeddedTranslations)
+    set(CONFIG_STATUS_TRANSLATIONS "disabled" CACHE INTERNAL "")
 endif()
 
 # target must be created AFTER Qt cmake was run and automoc enabled
