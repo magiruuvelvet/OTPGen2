@@ -2,6 +2,7 @@
 
 #include <QFile>
 #include <QResizeEvent>
+#include <QMouseEvent>
 
 LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QByteArray &iconData, const QSize &iconSize, QWidget *parent)
     : OTPBaseWidget(parent),
@@ -59,13 +60,27 @@ LabelWithIconDelegate::LabelWithIconDelegate(const QString &label, const QString
     }
 }
 
+void LabelWithIconDelegate::setClickCallback(const std::function<void(const OTPToken*)> *click_callback)
+{
+    this->click_callback = click_callback;
+}
+
 void LabelWithIconDelegate::resizeEvent(QResizeEvent *event)
 {
-//    if (!this->_processedIcon.isNull())
-//    {
-//        auto newHeight = this->height();
-//        this->_iconWidget->setPixmap(QPixmap::fromImage(this->_processedIcon).scaled(QSize(newHeight, newHeight), Qt::KeepAspectRatio, Qt::SmoothTransformation));
-//    }
-
     OTPBaseWidget::resizeEvent(event);
+}
+
+void LabelWithIconDelegate::mousePressEvent(QMouseEvent *event)
+{
+    if (this->click_callback)
+    {
+        (*this->click_callback)(this->rowContainer.obj);
+    }
+
+    OTPBaseWidget::mousePressEvent(event);
+}
+
+void LabelWithIconDelegate::mouseReleaseEvent(QMouseEvent *event)
+{
+    OTPBaseWidget::mouseReleaseEvent(event);
 }

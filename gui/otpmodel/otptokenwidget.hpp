@@ -12,6 +12,12 @@ class OTPTokenWidget : public QTableWidget
 public:
     OTPTokenWidget(OTPTokenModel *model, QWidget *parent = nullptr);
 
+    enum class RowHeight
+    {
+        Desktop   = 25,
+        Mobile    = 80,
+    };
+
     /**
      * Filters the shown tokens in the view.
      * The input string is parsed as a regular expression.
@@ -23,7 +29,14 @@ public:
     /**
      * Sets the height of rows. This also affects icon sizes.
      */
-    void setRowHeight(int height);
+    void setRowHeight(RowHeight height);
+
+    /**
+     * Enables copying the generated token when clicking on the label cell.
+     *
+     * Recommended for touch screens.
+     */
+    void enableTokenCopyOnLabelClick();
 
 protected:
     void changeEvent(QEvent *event);
@@ -36,7 +49,7 @@ private:
     void updateHeaderLabels();
 
     QString filterPattern;
-    int rowHeight = 25;
+    RowHeight rowHeight = RowHeight::Desktop;
 };
 
 #endif // OTPTOKENWIDGET_HPP

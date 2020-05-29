@@ -4,14 +4,21 @@
 #include "labelwithicondelegate.hpp"
 #include "tokendelegate.hpp"
 
+#include <QApplication>
 #include <QHeaderView>
 #include <QRegularExpression>
 #include <QEvent>
+#include <QClipboard>
 
 #define COLUMN_ACTIONS  0
 #define COLUMN_TYPE     1
 #define COLUMN_LABEL    2
 #define COLUMN_TOKEN    3
+
+static const std::function<void(const OTPToken*)> copy_token_to_clipboard = [](const OTPToken *token){
+    auto clipboard = QApplication::clipboard();
+    clipboard->setText(QString::fromStdString(token->generate()));
+};
 
 OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     : QTableWidget(parent),
@@ -24,7 +31,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
 
     // set fixed row height
     this->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
-    this->verticalHeader()->setDefaultSectionSize(this->rowHeight);
+    this->verticalHeader()->setDefaultSectionSize(static_cast<int>(this->rowHeight));
 
     // drag and drop of entire rows to change the order
     this->verticalHeader()->setSectionsMovable(true);
@@ -103,11 +110,16 @@ bool OTPTokenWidget::setFilter(const QString &filter)
     return true;
 }
 
-void OTPTokenWidget::setRowHeight(int height)
+void OTPTokenWidget::setRowHeight(RowHeight height)
 {
     this->rowHeight = height;
-    this->verticalHeader()->setDefaultSectionSize(this->rowHeight);
+    this->verticalHeader()->setDefaultSectionSize(static_cast<int>(this->rowHeight));
     this->refresh();
+}
+
+void OTPTokenWidget::enableTokenCopyOnLabelClick()
+{
+
 }
 
 void OTPTokenWidget::refresh()
@@ -126,6 +138,14 @@ void OTPTokenWidget::refresh()
         headerLabels.append(QString());
     }
     this->setVerticalHeaderLabels(headerLabels);
+
+    // icon size
+    unsigned int iconSize = 30;
+
+    if (this->rowHeight == RowHeight::Mobile)
+    {
+        iconSize = 75;
+    }
 
     // create cell widgets
     for (auto i = 0; i < model->rowCount(); ++i)
@@ -153,11 +173,10 @@ void OTPTokenWidget::refresh()
         this->cellWidget(i, COLUMN_TYPE)->layout()->setContentsMargins(8, 0, 8, 0);
 
         // token label and icon
-        unsigned int iconSize = this->rowHeight + 5;
-
         const QByteArray icon(token->icon().data(), token->icon().size());
         this->setCellWidget(i, COLUMN_LABEL,
                             new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(iconSize, iconSize), this));
+        qobject_cast<LabelWithIconDelegate*>(this->cellWidget(i, COLUMN_LABEL))->setClickCallback(&copy_token_to_clipboard);
 
         // generated token
         this->setCellWidget(i, COLUMN_TOKEN,

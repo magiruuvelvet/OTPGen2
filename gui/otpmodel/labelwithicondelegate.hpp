@@ -10,6 +10,7 @@
 #include <QImage>
 
 #include <memory>
+#include <functional>
 
 class LabelWithIconDelegate : public OTPBaseWidget
 {
@@ -28,14 +29,20 @@ public:
             const QSize &iconSize = QSize(),
             QWidget *parent = nullptr);
 
+    void setClickCallback(const std::function<void(const OTPToken*)> *click_callback);
+
 protected:
     void resizeEvent(QResizeEvent *event);
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     QString _label;
     QByteArray _icon;
     QSize _iconSize;
     QImage _processedIcon;
+
+    const std::function<void(const OTPToken*)> *click_callback = nullptr;
 
     std::shared_ptr<QHBoxLayout> _layout;
     std::shared_ptr<QLabel> _labelWidget;
