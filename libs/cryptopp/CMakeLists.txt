@@ -60,9 +60,6 @@ set(CRYPTOPP_COMPILE_OPTIONS)
 # Always 1 ahead in Master. Also see http://groups.google.com/forum/#!topic/cryptopp-users/SFhqLDTQPG4
 set(LIB_VER ${cryptopp_VERSION_MAJOR}${cryptopp_VERSION_MINOR}${cryptopp_VERSION_PATCH})
 
-# Don't use RPATH's. The resulting binary could fail a security audit.
-set(CMAKE_MACOSX_RPATH 0)
-
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
   list(APPEND CRYPTOPP_COMPILE_OPTIONS -wd68 -wd186 -wd279 -wd327 -wd161 -wd3180)
 endif ()
