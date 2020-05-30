@@ -7,6 +7,7 @@
 #include <QProgressBar>
 #include <QLineEdit>
 #include <QTimer>
+#include <QPalette>
 
 #include <string>
 
@@ -25,6 +26,12 @@ public:
      */
     void setGeneratedTokenVisible(bool);
 
+    void setGeneratedTokenVisibilityOnClick(bool);
+
+protected:
+    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
+
 private:
     void restartTimer();
     void generateToken();
@@ -34,6 +41,10 @@ private:
 
     // pointer to the OTPToken instance
     const OTPToken *tokenObj = nullptr;
+
+    bool tokenVisibilityOnClick = false;
+    Qt::FocusPolicy lineEditFocusPolicy;
+    QPalette lineEditPalette;
 
     std::shared_ptr<QTimer> tokenTimer;
     std::shared_ptr<QTimer> progressBarTimer;

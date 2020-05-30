@@ -18,6 +18,11 @@ class ActionsDelegate : public OTPBaseWidget
 public:
     ActionsDelegate(const OTPToken *tokenObj, QWidget *parent = nullptr);
 
+    inline QCheckBox *visibilityCheckbox() const
+    {
+        return this->_visibilityCb.get();
+    }
+
 private:
     void visibilityChanged(int);
     void copyTokenToClipboard();

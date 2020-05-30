@@ -32,11 +32,9 @@ public:
     void setRowHeight(RowHeight height);
 
     /**
-     * Enables copying the generated token when clicking on the label cell.
-     *
-     * Recommended for touch screens.
+     * Enables touch screen specific features for mobile devices.
      */
-    void enableTokenCopyOnLabelClick();
+    void setTouchScreenMode(bool);
 
 protected:
     void changeEvent(QEvent *event);
@@ -50,6 +48,7 @@ private:
 
     QString filterPattern;
     RowHeight rowHeight = RowHeight::Desktop;
+    bool touchScreenMode = false;
 };
 
 #endif // OTPTOKENWIDGET_HPP

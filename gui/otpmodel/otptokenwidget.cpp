@@ -57,7 +57,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
 
     // setup minimum width constraints for columns
     static const std::vector<int> minSizeContraints = {
-        70, 90, 150, 100,
+        0 /*70*/, 90, 150, 100,
     };
     connect(this->horizontalHeader(), &QHeaderView::sectionResized, this, [&](int logicalIndex, int oldSize, int newSize) {
         if (newSize < minSizeContraints.at(logicalIndex))
@@ -71,6 +71,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     {
         this->setColumnWidth(i, minSizeContraints.at(i));
     }
+    this->setColumnWidth(COLUMN_ACTIONS, 70);
 
     // populate rows
     this->refresh();
@@ -117,9 +118,11 @@ void OTPTokenWidget::setRowHeight(RowHeight height)
     this->refresh();
 }
 
-void OTPTokenWidget::enableTokenCopyOnLabelClick()
+void OTPTokenWidget::setTouchScreenMode(bool enabled)
 {
-
+    this->touchScreenMode = enabled;
+    this->setColumnHidden(0, enabled);
+    this->refresh();
 }
 
 void OTPTokenWidget::refresh()
@@ -144,7 +147,7 @@ void OTPTokenWidget::refresh()
 
     if (this->rowHeight == RowHeight::Mobile)
     {
-        iconSize = 75;
+        iconSize = 68;
     }
 
     // create cell widgets
@@ -176,11 +179,16 @@ void OTPTokenWidget::refresh()
         const QByteArray icon(token->icon().data(), token->icon().size());
         this->setCellWidget(i, COLUMN_LABEL,
                             new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(iconSize, iconSize), this));
-        qobject_cast<LabelWithIconDelegate*>(this->cellWidget(i, COLUMN_LABEL))->setClickCallback(&copy_token_to_clipboard);
 
         // generated token
         this->setCellWidget(i, COLUMN_TOKEN,
                             new TokenDelegate(token, this));
+
+        if (this->touchScreenMode)
+        {
+            qobject_cast<LabelWithIconDelegate*>(this->cellWidget(i, COLUMN_LABEL))->setClickCallback(&copy_token_to_clipboard);
+            qobject_cast<TokenDelegate*>(this->cellWidget(i, COLUMN_TOKEN))->setGeneratedTokenVisibilityOnClick(true);
+        }
 
         // setup row pointers for easy access across the entire row
         auto waction = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_ACTIONS));

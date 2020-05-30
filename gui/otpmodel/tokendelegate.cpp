@@ -1,6 +1,9 @@
 #include "tokendelegate.hpp"
+#include "actionsdelegate.hpp"
 
 #include <otptoken.hpp>
+
+#include <QMouseEvent>
 
 TokenDelegate::TokenDelegate(const OTPToken *tokenObj, QWidget *parent)
     : OTPBaseWidget(parent),
@@ -60,6 +63,8 @@ TokenDelegate::TokenDelegate(const OTPToken *tokenObj, QWidget *parent)
     font.setFamily("monospace");
     this->_generatedToken->setFont(font);
     this->_generatedToken->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    this->lineEditFocusPolicy = this->_generatedToken->focusPolicy();
+    this->lineEditPalette = this->_generatedToken->palette();
 
     this->_layout->addWidget(this->_generatedToken.get());
 
@@ -94,6 +99,55 @@ void TokenDelegate::setGeneratedTokenVisible(bool visible)
 {
     this->_timerBar->setVisible(visible);
     this->_generatedToken->setVisible(visible);
+}
+
+void TokenDelegate::setGeneratedTokenVisibilityOnClick(bool enabled)
+{
+    this->tokenVisibilityOnClick = enabled;
+
+    if (enabled)
+    {
+        this->_generatedToken->setFocusPolicy(Qt::NoFocus);
+        this->_generatedToken->setEnabled(false);
+
+        // copy active palette to disabled palette style
+        auto pal = this->_generatedToken->palette();
+        auto activeBackground = pal.color(QPalette::Normal, QPalette::Base);
+        pal.setColor(QPalette::Disabled, QPalette::Base, activeBackground);
+        auto activeForeground = pal.color(QPalette::Normal, QPalette::Text);
+        pal.setColor(QPalette::Disabled, QPalette::Text, activeForeground);
+        this->_generatedToken->setPalette(pal);
+    }
+    else
+    {
+        this->_generatedToken->setFocusPolicy(this->lineEditFocusPolicy);
+        this->_generatedToken->setDisabled(false);
+        this->_generatedToken->setPalette(this->lineEditPalette);
+    }
+}
+
+void TokenDelegate::mousePressEvent(QMouseEvent *event)
+{
+    if (this->tokenVisibilityOnClick)
+    {
+        if (this->_generatedToken->isVisible())
+        {
+            this->setGeneratedTokenVisible(false);
+            qobject_cast<ActionsDelegate*>(this->rowContainer.action)->visibilityCheckbox()->setChecked(false);
+        }
+        else
+        {
+            this->setGeneratedTokenVisible(true);
+            qobject_cast<ActionsDelegate*>(this->rowContainer.action)->visibilityCheckbox()->setChecked(true);
+        }
+    }
+
+    OTPBaseWidget::mousePressEvent(event);
+}
+
+void TokenDelegate::mouseReleaseEvent(QMouseEvent *event)
+{
+    OTPBaseWidget::mouseReleaseEvent(event);
 }
 
 void TokenDelegate::restartTimer()
