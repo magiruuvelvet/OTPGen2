@@ -12,3 +12,16 @@ else()
     message(STATUS "Found libfmt ${fmt_VERSION}")
     set(CONFIG_STATUS_LIBFMT "${fmt_VERSION} (system)" CACHE INTERNAL "")
 endif()
+
+# qr-code-generator
+add_library(qr-code-generator-lib STATIC
+    "${PROJECT_SOURCE_DIR}/libs/qr-code-generator/cpp/QrCode.cpp"
+    "${PROJECT_SOURCE_DIR}/libs/qr-code-generator/cpp/QrCode.hpp"
+)
+set_target_properties(qr-code-generator-lib PROPERTIES PREFIX "")
+set_target_properties(qr-code-generator-lib PROPERTIES OUTPUT_NAME "qr-code-generator")
+SetCppStandard(qr-code-generator-lib 20)
+set_target_properties(qr-code-generator-lib PROPERTIES LINKER_LANGUAGE CXX)
+add_library(qr-code-generator INTERFACE)
+target_include_directories(qr-code-generator INTERFACE "${PROJECT_SOURCE_DIR}/libs/qr-code-generator/cpp")
+target_link_libraries(qr-code-generator INTERFACE qr-code-generator-lib)

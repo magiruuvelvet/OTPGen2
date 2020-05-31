@@ -13,3 +13,6 @@
 [submodule "libs/fmt"]
 	path = libs/fmt
 	url = https://github.com/fmtlib/fmt.git
+[submodule "libs/qr-code-generator"]
+	path = libs/qr-code-generator
+	url = https://github.com/nayuki/QR-Code-generator.git
