@@ -1,6 +1,7 @@
 #include <bandit/bandit.h>
 
 #include <qr/decoder.hpp>
+#include <qr/encoder.hpp>
 
 using namespace snowhouse;
 using namespace bandit;
@@ -56,6 +57,11 @@ go_bandit([]{
                 AssertThat(error, Equals(QRCode::DecodingNotSupported));
                 AssertThat(res, Equals(std::string()));
             }
+        });
+
+        it("[encode]", [&]{
+            const auto res = QRCode::encode("hello world");
+            AssertThat(res.size(), IsGreaterThanOrEqualTo(3000));
         });
     });
 });
