@@ -99,7 +99,7 @@ public:
      * Checks if the OTPToken instance is considered valid
      * and has all data required to generate tokens.
      */
-    inline bool isValid() const
+    constexpr inline bool isValid() const
     {
         return this->valid && !this->_secret.empty();
     }
@@ -113,44 +113,44 @@ public:
         return !this->generate().empty();
     }
 
-    inline void setLabel(const std::string &label)
+    constexpr inline void setLabel(const std::string &label)
     { this->_label = label; }
-    inline const auto &label() const
+    constexpr inline const auto &label() const
     { return this->_label; }
 
-    inline void setSecret(const std::string &secret)
+    constexpr inline void setSecret(const std::string &secret)
     { this->_secret = secret; }
-    inline const auto &secret() const
+    constexpr inline const auto &secret() const
     { return this->_secret; }
 
-    inline void setDigits(const std::uint8_t &digits)
+    constexpr inline void setDigits(const std::uint8_t &digits)
     { this->_digits = digits; }
-    inline const auto &digits() const
+    constexpr inline const auto &digits() const
     { return this->_digits; }
 
-    inline void setPeriod(const std::uint32_t &period)
+    constexpr inline void setPeriod(const std::uint32_t &period)
     { this->_period = period; }
-    inline const auto &period() const
+    constexpr inline const auto &period() const
     { return this->_period; }
 
-    inline void setCounter(const std::uint32_t &counter)
+    constexpr inline void setCounter(const std::uint32_t &counter)
     { this->_counter = counter; }
-    inline const auto &counter() const
+    constexpr inline const auto &counter() const
     { return this->_counter; }
 
-    inline void setType(const Type &type)
+    constexpr inline void setType(const Type &type)
     { this->_type = type; }
-    inline const auto &type() const
+    constexpr inline const auto &type() const
     { return this->_type; }
 
-    inline void setAlgorithm(const Algorithm &algorithm)
+    constexpr inline void setAlgorithm(const Algorithm &algorithm)
     { this->_algorithm = algorithm; }
-    inline const auto &algorithm() const
+    constexpr inline const auto &algorithm() const
     { return this->_algorithm; }
 
-    inline void setIcon(const Data &icon)
+    constexpr inline void setIcon(const Data &icon)
     { this->_icon = icon; }
-    inline const auto &icon() const
+    constexpr inline const auto &icon() const
     { return this->_icon; }
 
     /**
@@ -206,7 +206,7 @@ public:
     /**
      * does not equal operator
      */
-    inline const bool operator!= (const OTPToken &other) const
+    constexpr inline const bool operator!= (const OTPToken &other) const
     {
         return !this->operator== (other);
     }

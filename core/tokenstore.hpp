@@ -56,7 +56,7 @@ public:
     /**
      * Returns a const pointer to all stored tokens.
      */
-    inline const std::vector<OTPToken> *tokens() const
+    constexpr inline const std::vector<OTPToken> *tokens() const
     {
         return &this->_tokens;
     }
@@ -65,7 +65,7 @@ public:
      * Adds a new token to the token store.
      * The token object is copy constructed.
      */
-    inline void addToken(const OTPToken &token)
+    constexpr inline void addToken(const OTPToken &token)
     {
         this->_tokens.emplace_back(token);
     }
@@ -73,7 +73,7 @@ public:
     /**
      * Checks if this token store is properly initialized.
      */
-    inline bool isValid() const
+    constexpr inline bool isValid() const
     {
         return this->_state == NoError;
     }
@@ -83,7 +83,7 @@ public:
      *
      * Use this if @see isValid returns false for error handling.
      */
-    inline ErrorCode state() const
+    constexpr inline ErrorCode state() const
     {
         return this->_state;
     }
