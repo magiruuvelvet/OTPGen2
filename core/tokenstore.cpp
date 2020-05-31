@@ -85,7 +85,10 @@ static bool encryptData(const std::ostringstream &input, const std::string &pass
 
         const std::string inputData = input.str();
 
-        CryptoPP::SecByteBlock key(CryptoPP::AES::MAX_KEYLENGTH + CryptoPP::AES::BLOCKSIZE);
+        const unsigned int aes_max_keylength = CryptoPP::AES::MAX_KEYLENGTH;
+        const unsigned int aes_blocksize = CryptoPP::AES::BLOCKSIZE;
+
+        CryptoPP::SecByteBlock key(aes_max_keylength + aes_blocksize);
         CryptoPP::HKDF<CryptoPP::SHA256> hkdf;
         hkdf.DeriveKey(key, key.size(),
                        reinterpret_cast<const unsigned char*>(password.data()), password.size(),
