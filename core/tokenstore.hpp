@@ -95,6 +95,8 @@ public:
     ErrorCode commit();
 
 private:
+    void deserializeData(const std::string &fileContents);
+
     std::string _filePath;
     std::string _password;
     std::vector<OTPToken> _tokens;

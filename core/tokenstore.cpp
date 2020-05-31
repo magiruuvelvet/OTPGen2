@@ -77,6 +77,20 @@ static bool writeFile(const std::string &filePath, const std::string &contents)
     return false;
 }
 
+static CryptoPP::SecByteBlock makeKey(const std::string &password)
+{
+    const unsigned int aes_max_keylength = CryptoPP::AES::MAX_KEYLENGTH;
+    const unsigned int aes_blocksize = CryptoPP::AES::BLOCKSIZE;
+
+    CryptoPP::SecByteBlock key(aes_max_keylength + aes_blocksize);
+    CryptoPP::HKDF<CryptoPP::SHA256> hkdf;
+    hkdf.DeriveKey(key, key.size(),
+                   reinterpret_cast<const unsigned char*>(password.data()), password.size(),
+                   reinterpret_cast<const unsigned char*>(password.data()), password.size(), nullptr, 0);
+
+    return key;
+}
+
 static bool encryptData(const std::ostringstream &input, const std::string &password, std::string &output)
 {
     output.clear();
@@ -84,15 +98,7 @@ static bool encryptData(const std::ostringstream &input, const std::string &pass
     try {
 
         const std::string inputData = input.str();
-
-        const unsigned int aes_max_keylength = CryptoPP::AES::MAX_KEYLENGTH;
-        const unsigned int aes_blocksize = CryptoPP::AES::BLOCKSIZE;
-
-        CryptoPP::SecByteBlock key(aes_max_keylength + aes_blocksize);
-        CryptoPP::HKDF<CryptoPP::SHA256> hkdf;
-        hkdf.DeriveKey(key, key.size(),
-                       reinterpret_cast<const unsigned char*>(password.data()), password.size(),
-                       reinterpret_cast<const unsigned char*>(password.data()), password.size(), nullptr, 0);
+        const auto key = makeKey(password);
 
         CryptoPP::AES::Encryption aesEncryption(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
         CryptoPP::CBC_Mode_ExternalCipher::Encryption cbcEncryption(aesEncryption, reinterpret_cast<const unsigned char*>(password.data()));
@@ -105,6 +111,30 @@ static bool encryptData(const std::ostringstream &input, const std::string &pass
 
     } catch (...) {
         output.clear();
+    }
+
+    return false;
+}
+
+static bool decryptData(const std::string &encrypted, const std::string &password, std::string &decrypted)
+{
+    decrypted.clear();
+
+    try {
+
+        const auto key = makeKey(password);
+
+        CryptoPP::AES::Decryption aesDecryption(key, CryptoPP::AES::DEFAULT_KEYLENGTH);
+        CryptoPP::CBC_Mode_ExternalCipher::Decryption cbcDecryption(aesDecryption, reinterpret_cast<const unsigned char*>(password.data()));
+
+        CryptoPP::StreamTransformationFilter stfDecryptor(cbcDecryption, new CryptoPP::StringSink(decrypted));
+        stfDecryptor.Put(reinterpret_cast<const unsigned char*>(encrypted.data()), encrypted.size());
+        stfDecryptor.MessageEnd();
+
+        return true;
+
+    } catch (...) {
+        decrypted.clear();
     }
 
     return false;
@@ -144,7 +174,22 @@ TokenStore::TokenStore(const std::string &filePath, const std::string &password)
     if (exists && is_reg)
     {
         // attempt to use existing file
-        // TODO: read from encrypted file
+        if (loadFileContents(this->_filePath, fileContents))
+        {
+            std::string decrypted;
+            if (decryptData(fileContents, this->_password, decrypted))
+            {
+                this->deserializeData(decrypted);
+            }
+            else
+            {
+                this->_state = DecryptionError;
+            }
+        }
+        else
+        {
+            this->_state = PermissionDenied;
+        }
         return;
     }
     else if (exists)
@@ -197,4 +242,25 @@ TokenStore::ErrorCode TokenStore::commit()
     }
 
     return NoError;
+}
+
+void TokenStore::deserializeData(const std::string &fileContents)
+{
+    const std::string strdata(fileContents.data(), fileContents.size());
+    std::istringstream buffer(strdata);
+
+    cereal::PortableBinaryInputArchive archive(buffer);
+    try {
+        archive(this->_tokens);
+        for (auto&& token : this->_tokens)
+        {
+            if (!token._secret.empty())
+            {
+                token.valid = true;
+            }
+        }
+    } catch (cereal::Exception &e) {
+        this->_tokens.clear();
+        this->_state = DeserializationError;
+    }
 }
