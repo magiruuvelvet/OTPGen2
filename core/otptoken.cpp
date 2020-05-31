@@ -133,8 +133,11 @@ OTPToken::OTPToken(const Data &data)
     cereal::PortableBinaryInputArchive archive(buffer);
     try {
         archive(self);
-    }  catch (cereal::Exception &e) {
+        this->valid = true;
+        self.valid = true;
+    } catch (cereal::Exception &e) {
         this->valid = false;
+        self.valid = false;
     }
 
     *this = self;

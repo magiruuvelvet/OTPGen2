@@ -83,6 +83,14 @@ public:
     OTPToken(const Data &data);
 
     /**
+     * Constructs an invalid instance.
+     */
+    OTPToken()
+        : valid(false)
+    {
+    }
+
+    /**
      * Destructor
      */
     ~OTPToken();
@@ -204,10 +212,10 @@ public:
     }
 
 private:
-    OTPToken() {}
-
     // Token Property Version (increment if changing properties)
     static const std::uint32_t VERSION;
+
+    friend class TokenStore;
 
     // Serialization Support
     template<class Archive>
