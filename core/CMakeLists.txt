@@ -63,6 +63,9 @@ else()
     set(CONFIG_STATUS_MAGICKPP "(not needed)" CACHE INTERNAL "")
 endif()
 
+# qr-code-generator
+target_link_libraries(${CURRENT_TARGET} PRIVATE qr-code-generator)
+
 add_library(${CURRENT_TARGET_INTERFACE} INTERFACE)
 target_include_directories(${CURRENT_TARGET_INTERFACE} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
 target_link_libraries(${CURRENT_TARGET_INTERFACE} INTERFACE ${CURRENT_TARGET})
