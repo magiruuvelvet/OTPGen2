@@ -215,6 +215,32 @@ TokenStore::~TokenStore()
     TokenStore::deletePassword(&this->_password);
 }
 
+void TokenStore::addToken(const OTPToken &newToken)
+{
+    // check if token already exists in store
+    for (auto&& token : this->_tokens)
+    {
+        if (token == newToken)
+        {
+            return;
+        }
+    }
+
+    this->_tokens.emplace_back(newToken);
+}
+
+void TokenStore::removeToken(const OTPToken &token)
+{
+    for (auto i = 0; i < this->_tokens.size(); ++i)
+    {
+        if (this->_tokens.at(i) == token)
+        {
+            this->_tokens.erase(this->_tokens.begin() + i);
+            break;
+        }
+    }
+}
+
 TokenStore::ErrorCode TokenStore::commit()
 {
     // refuse to commit a invalid state

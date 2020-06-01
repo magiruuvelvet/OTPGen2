@@ -62,12 +62,40 @@ public:
     }
 
     /**
+     * Implicit cast to `const std::vector<OTPToken> *`.
+     */
+    constexpr inline operator const std::vector<OTPToken> *() const
+    {
+        return &this->_tokens;
+    }
+
+    /**
      * Adds a new token to the token store.
      * The token object is copy constructed.
+     * Exact duplicates won't be added. @see operator==
      */
-    constexpr inline void addToken(const OTPToken &token)
+    void addToken(const OTPToken &token);
+
+    /**
+     * Removes an existing token from the token store.
+     * If the token didn't previously existed nothing happens.
+     */
+    void removeToken(const OTPToken &token);
+
+    /**
+     * Clears the token store, removing all tokens from it.
+     */
+    constexpr inline void clear()
     {
-        this->_tokens.emplace_back(token);
+        this->_tokens.clear();
+    }
+
+    /**
+     * Returns the number of elements in the token store.
+     */
+    constexpr inline auto size() const
+    {
+        return this->_tokens.size();
     }
 
     /**
