@@ -176,21 +176,26 @@ TokenStore::TokenStore(const std::string &filePath, const std::string &password)
         // attempt to use existing file
         if (loadFileContents(this->_filePath, fileContents))
         {
-            std::string decrypted;
-            if (decryptData(fileContents, this->_password, decrypted))
+            if (!fileContents.empty())
             {
-                this->deserializeData(decrypted);
-            }
-            else
-            {
-                this->_state = DecryptionError;
+                std::string decrypted;
+                if (decryptData(fileContents, this->_password, decrypted))
+                {
+                    this->deserializeData(decrypted);
+                    return;
+                }
+                else
+                {
+                    this->_state = DecryptionError;
+                    return;
+                }
             }
         }
         else
         {
             this->_state = PermissionDenied;
+            return;
         }
-        return;
     }
     else if (exists)
     {
@@ -204,9 +209,11 @@ TokenStore::TokenStore(const std::string &filePath, const std::string &password)
         if (!loadFileContents(this->_filePath, fileContents, true))
         {
             this->_state = PermissionDenied;
+            return;
         }
-        return;
     }
+
+    this->_state = NoError;
 }
 
 TokenStore::~TokenStore()
@@ -272,8 +279,7 @@ TokenStore::ErrorCode TokenStore::commit()
 
 void TokenStore::deserializeData(const std::string &fileContents)
 {
-    const std::string strdata(fileContents.data(), fileContents.size());
-    std::istringstream buffer(strdata);
+    std::istringstream buffer(fileContents);
 
     cereal::PortableBinaryInputArchive archive(buffer);
     try {
