@@ -70,11 +70,22 @@ public:
     }
 
     /**
+     * Returns a const reference to the token at the given index.
+     * Can throw a out of range exception.
+     */
+    constexpr inline const OTPToken &operator[] (std::vector<OTPToken>::size_type index) const
+    {
+        return this->_tokens.at(index);
+    }
+
+    /**
      * Adds a new token to the token store.
      * The token object is copy constructed.
      * Exact duplicates won't be added. @see operator==
+     * Invalid tokens can't be added to the token store.
+     * Returns true when the token already exists in the store.
      */
-    void addToken(const OTPToken &token);
+    bool addToken(const OTPToken &token);
 
     /**
      * Removes an existing token from the token store.

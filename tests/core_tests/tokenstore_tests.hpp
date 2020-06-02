@@ -7,6 +7,8 @@ using namespace bandit;
 
 go_bandit([]{
     describe("tokenstore", []{
+        const std::string test_assets_dir = TEST_ASSETS_DIR;
+        const std::string test_output_dir = TEST_OUTPUT_DIR;
 
         // create in-memory token store
         TokenStore tokenStore;
@@ -18,11 +20,19 @@ go_bandit([]{
         });
 
         it("[add]", [&]{
-            tokenStore.addToken(OTPToken("test", "secret"));
-            AssertThat(tokenStore.size(), Equals(1));
+            bool res;
 
-            tokenStore.addToken(OTPToken("test", "secret"));
+            res = tokenStore.addToken(OTPToken("test", "secret"));
             AssertThat(tokenStore.size(), Equals(1));
+            AssertThat(res, Equals(true));
+
+            res = tokenStore.addToken(OTPToken("test", "secret"));
+            AssertThat(tokenStore.size(), Equals(1));
+            AssertThat(res, Equals(true));
+
+            res = tokenStore.addToken(OTPToken());
+            AssertThat(tokenStore.size(), Equals(1));
+            AssertThat(res, Equals(false));
         });
 
         it("[remove]", [&]{
@@ -31,6 +41,29 @@ go_bandit([]{
 
             tokenStore.removeToken(tokenStore.tokens()->at(0));
             AssertThat(tokenStore.size(), Equals(0));
+        });
+
+        it("[decrypt]", [&]{
+            TokenStore tks(test_assets_dir + "/test.tks", "password");
+            AssertThat(tks.isValid(), Equals(true));
+            AssertThat(tks.size(), Equals(2));
+            AssertThat(tks[0].label(), Equals("test1"));
+            AssertThat(tks[0].secret(), Equals("secret"));
+            AssertThat(tks[1].label(), Equals("test2"));
+            AssertThat(tks[1].secret(), Equals("secret"));
+        });
+
+        it("[commit]", [&]{
+            TokenStore tks(test_output_dir + "/commit_test.tks", "password");
+            tks.addToken(OTPToken("test3", "secret"));
+            const auto res = tks.commit();
+            AssertThat(res, Equals(TokenStore::NoError));
+
+            TokenStore tks2(test_output_dir + "/commit_test.tks", "password");
+            AssertThat(tks2.isValid(), Equals(true));
+            AssertThat(tks2.size(), Equals(1));
+            AssertThat(tks2[0].label(), Equals("test3"));
+            AssertThat(tks2[0].secret(), Equals("secret"));
         });
     });
 });

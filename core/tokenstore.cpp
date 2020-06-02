@@ -222,18 +222,24 @@ TokenStore::~TokenStore()
     TokenStore::deletePassword(&this->_password);
 }
 
-void TokenStore::addToken(const OTPToken &newToken)
+bool TokenStore::addToken(const OTPToken &newToken)
 {
+    if (!newToken.canGenerateTokens())
+    {
+        return false;
+    }
+
     // check if token already exists in store
     for (auto&& token : this->_tokens)
     {
         if (token == newToken)
         {
-            return;
+            return true;
         }
     }
 
     this->_tokens.emplace_back(newToken);
+    return true;
 }
 
 void TokenStore::removeToken(const OTPToken &token)
