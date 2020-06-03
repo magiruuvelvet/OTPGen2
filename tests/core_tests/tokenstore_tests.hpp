@@ -55,6 +55,7 @@ go_bandit([]{
 
         it("[commit]", [&]{
             TokenStore tks(test_output_dir + "/commit_test.tks", "password");
+            // note that duplicates aren't added so this test should succeed on repeated executions
             tks.addToken(OTPToken("test3", "secret"));
             const auto res = tks.commit();
             AssertThat(res, Equals(TokenStore::NoError));
