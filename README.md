@@ -1,6 +1,6 @@
 # OTPGen 2
 
-**FreeBSD** [![](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=freebsd/badge/icon?style=flat-square)](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=freebsd/lastBuild/console) | **Linux** [![](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=linux/badge/icon?style=flat-square)](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=linux/lastBuild/console)
+[![](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=freebsd/badge/icon?style=flat-square&subject=FreeBSD)](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=freebsd/lastBuild/console) | [![](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=linux/badge/icon?style=flat-square&subject=Linux)](https://jenkins.magiruuvelvet.gdn/job/OTPGen/platform=linux/lastBuild/console)
 
 Multi-purpose OTP token generator written in C++ and Qt with encryption and System Tray Icon. Supports TOTP, HOTP, Authy and Steam and custom digit lengths and periods.
 
