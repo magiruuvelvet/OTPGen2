@@ -86,5 +86,11 @@ go_bandit([]{
             OTPToken tkn("", "_", OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(tkn.canGenerateTokens(), Equals(false));
         });
+
+        it("[format]", [&]{
+            const auto tkn = OTPToken();
+            AssertThat(std::string(tkn),
+                       Equals("OTPToken{ label=\"\", secret=[empty], digits=0, period=0, counter=[hidden], type=TOTP, algorithm=SHA1, icon=0, valid=false }"));
+        });
     });
 });
