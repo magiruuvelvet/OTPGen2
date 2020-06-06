@@ -4,16 +4,12 @@
 
 #include <sstream>
 
+#include <magic_enum.hpp>
+
 const std::uint32_t OTPToken::VERSION = 0x00000001;
 
 namespace
 {
-    // token type names
-    const std::string str_unknown = "(unknown)";
-    const std::string str_totp    = "TOTP";
-    const std::string str_hotp    = "HOTP";
-    const std::string str_steam   = "Steam";
-
     // token defaults config
     struct defaults
     {
@@ -147,15 +143,9 @@ OTPToken::~OTPToken()
 {
 }
 
-const std::string &OTPToken::typeName() const
+const std::string OTPToken::typeName() const
 {
-    switch (this->_type)
-    {
-        case TOTP:  return str_totp;
-        case HOTP:  return str_hotp;
-        case Steam: return str_steam;
-        default:    return str_unknown;
-    }
+    return std::string(magic_enum::enum_name(this->_type));
 }
 
 const OTPToken::Data OTPToken::serialize() const

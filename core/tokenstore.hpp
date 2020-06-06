@@ -2,6 +2,7 @@
 #define TOKENSTORE_HPP
 
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "otptoken.hpp"
@@ -126,6 +127,11 @@ public:
     {
         return this->_state;
     }
+
+    /**
+     * Returns the ErrorCode enum value as string.
+     */
+    const std::string_view error_code() const;
 
     /**
      * Commit changes to the filesystem.

@@ -16,6 +16,8 @@
 #include <cryptopp/modes.h>
 #include <cryptopp/filters.h>
 
+#include <magic_enum.hpp>
+
 namespace
 {
 
@@ -252,6 +254,11 @@ void TokenStore::removeToken(const OTPToken &token)
             break;
         }
     }
+}
+
+const std::string_view TokenStore::error_code() const
+{
+    return magic_enum::enum_name(this->_state);
 }
 
 TokenStore::ErrorCode TokenStore::commit()

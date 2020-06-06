@@ -160,7 +160,7 @@ public:
      * This function can be used for interfaces to easily print out
      * the type without additional code bloat.
      */
-    const std::string &typeName() const;
+    const std::string typeName() const;
 
     /**
      * Serializes the object into a portable binary sequence.
