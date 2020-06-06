@@ -25,3 +25,7 @@ set_target_properties(qr-code-generator-lib PROPERTIES LINKER_LANGUAGE CXX)
 add_library(qr-code-generator INTERFACE)
 target_include_directories(qr-code-generator INTERFACE "${PROJECT_SOURCE_DIR}/libs/qr-code-generator/cpp")
 target_link_libraries(qr-code-generator INTERFACE qr-code-generator-lib)
+
+# magic_enum
+add_library(magic_enum INTERFACE)
+target_include_directories(magic_enum INTERFACE "${PROJECT_SOURCE_DIR}/libs/magic_enum/include")

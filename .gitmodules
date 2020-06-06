@@ -16,3 +16,6 @@
 [submodule "libs/qr-code-generator"]
 	path = libs/qr-code-generator
 	url = https://github.com/nayuki/QR-Code-generator.git
+[submodule "libs/magic_enum"]
+	path = libs/magic_enum
+	url = https://github.com/Neargye/magic_enum.git
