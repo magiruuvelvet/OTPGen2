@@ -5,6 +5,7 @@
 #include <sstream>
 
 #include <magic_enum.hpp>
+#include <fmt/format.h>
 
 const std::uint32_t OTPToken::VERSION = 0x00000001;
 
@@ -268,4 +269,30 @@ void OTPToken::set_defaults(const void *_def)
     this->_period = def->period;
     this->_counter = def->counter;
     this->_algorithm = def->algorithm;
+}
+
+OTPToken::operator const std::string() const
+{
+    return fmt::format(
+        "OTPToken{{ "
+            "label=\"{}\", "
+            "secret=[{}], "
+            "digits={}, "
+            "period={}, "
+            "counter={}, "
+            "type={}, "
+            "algorithm={}, "
+            "icon={}, "
+            "valid={} "
+        "}}",
+        this->_label,
+        (this->_secret.empty() ? "empty" : "redacted"),
+        this->_digits,
+        this->_period,
+        "[hidden]",
+        magic_enum::enum_name(this->_type),
+        magic_enum::enum_name(this->_algorithm),
+        this->_icon.size(),
+        this->isValid()
+    );
 }

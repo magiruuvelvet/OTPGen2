@@ -88,6 +88,11 @@ public:
     OTPToken()
         : valid(false)
     {
+        this->_digits = 0;
+        this->_period = 0;
+        this->_counter = 0;
+        this->_type = TOTP;
+        this->_algorithm = SHA1;
     }
 
     /**
@@ -210,6 +215,11 @@ public:
     {
         return !this->operator== (other);
     }
+
+    /**
+     * Implicit std::string cast for logging.
+     */
+    operator const std::string() const;
 
 private:
     // Token Property Version (increment if changing properties)
