@@ -1,4 +1,5 @@
 #include <bandit/bandit.h>
+#include <benchmark.hpp>
 
 #include <tokenstore.hpp>
 
@@ -13,13 +14,13 @@ go_bandit([]{
         // create in-memory token store
         TokenStore tokenStore;
 
-        it("[delete password]", [&]{
+        benchmark_it("[delete password]", [&]{
             std::string password("some sensitive value");
             TokenStore::deletePassword(&password);
             AssertThat(password, Equals(std::string("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", 20)));
         });
 
-        it("[add]", [&]{
+        benchmark_it("[add]", [&]{
             bool res;
 
             res = tokenStore.addToken(OTPToken("test", "secret"));
@@ -35,7 +36,7 @@ go_bandit([]{
             AssertThat(res, Equals(false));
         });
 
-        it("[remove]", [&]{
+        benchmark_it("[remove]", [&]{
             tokenStore.removeToken(OTPToken());
             AssertThat(tokenStore.size(), Equals(1));
 
@@ -43,7 +44,7 @@ go_bandit([]{
             AssertThat(tokenStore.size(), Equals(0));
         });
 
-        it("[decrypt]", [&]{
+        benchmark_it("[decrypt]", [&]{
             TokenStore tks(test_assets_dir + "/test.tks", "password");
             AssertThat(tks.isValid(), Equals(true));
             AssertThat(tks.size(), Equals(2));
@@ -53,7 +54,7 @@ go_bandit([]{
             AssertThat(tks[1].secret(), Equals("secret"));
         });
 
-        it("[commit]", [&]{
+        benchmark_it("[commit]", [&]{
             TokenStore tks(test_output_dir + "/commit_test.tks", "password");
             // note that duplicates aren't added so this test should succeed on repeated executions
             tks.addToken(OTPToken("test3", "secret"));

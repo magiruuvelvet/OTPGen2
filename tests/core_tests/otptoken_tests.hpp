@@ -1,4 +1,5 @@
 #include <bandit/bandit.h>
+#include <benchmark.hpp>
 
 #include <otptoken.hpp>
 
@@ -10,12 +11,12 @@ go_bandit([]{
         OTPToken token("label", "secret", 7, 50, 0, OTPToken::TOTP, OTPToken::SHA1);
         OTPToken::Data serialized;
 
-        it("[equals]", [&]{
+        benchmark_it("[equals]", [&]{
             OTPToken other("label", "secret", 7, 50, 0, OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(token, Equals(other));
         });
 
-        it("[serialize]", [&]{
+        benchmark_it("[serialize]", [&]{
             serialized = token.serialize();
 
             // portable binary test
@@ -31,7 +32,7 @@ go_bandit([]{
             AssertThat(serialized, Equals(results));
         });
 
-        it("[deserialize]", [&]{
+        benchmark_it("[deserialize]", [&]{
             OTPToken deserialized(serialized);
 
             AssertThat(deserialized.isValid(), Equals(true));
@@ -47,47 +48,47 @@ go_bandit([]{
             AssertThat(deserialized.icon().size(), Equals(0));
         });
 
-        it("[deserialize invalid]", [&]{
+        benchmark_it("[deserialize invalid]", [&]{
             OTPToken deserialized(OTPToken::Data{0x01, 0x30, 0x30});
             AssertThat(deserialized.isValid(), Equals(false));
         });
 
         // test totp token at a fixed time, result must be always the same
-        it("[compute TOTP 1]", [&]{
+        benchmark_it("[compute TOTP 1]", [&]{
             OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(tkn.generate(1536573862), Equals(std::string("122810")));
         });
 
         // test totp token at a fixed time, result must be always the same
-        it("[compute TOTP 2]", [&]{
+        benchmark_it("[compute TOTP 2]", [&]{
             OTPToken tkn("", "XYZA123456KDDK83D28273", 7, 10, 0, OTPToken::TOTP, OTPToken::SHA1); // Authy uses those values
             AssertThat(tkn.generate(1536573862), Equals(std::string("8578249")));
         });
 
         // test hotp token with a fixed counter at 12
-        it("[compute HOTP]", [&]{
+        benchmark_it("[compute HOTP]", [&]{
             OTPToken tkn("", "XYZA123456KDDK83D", 6, 0, 12, OTPToken::HOTP, OTPToken::SHA1);
             AssertThat(tkn.generate(), Equals(std::string("534003")));
         });
 
         // test steam token at a fixed time, result must be always the same
-        it("[compute Steam]", [&]{
+        benchmark_it("[compute Steam]", [&]{
             OTPToken tkn("", "ABC30WAY33X57CCBU3EAXGDDMX35S39M", OTPToken::Steam);
             AssertThat(tkn.generate(1536573862), Equals(std::string("GQTTM")));
         });
 
-        it("[remaining validity]", [&]{
+        benchmark_it("[remaining validity]", [&]{
             OTPToken tkn("", "XYZA123456KDDK83D", OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(tkn.remainingTokenValidity(), IsLessThanOrEqualTo(31)); // +1 threshold
             AssertThat(tkn.remainingTokenValidity(), IsGreaterThanOrEqualTo(0));
         });
 
-        it("[invalid secret]", [&]{
+        benchmark_it("[invalid secret]", [&]{
             OTPToken tkn("", "_", OTPToken::TOTP, OTPToken::SHA1);
             AssertThat(tkn.canGenerateTokens(), Equals(false));
         });
 
-        it("[format]", [&]{
+        benchmark_it("[format]", [&]{
             const auto tkn = OTPToken();
             AssertThat(std::string(tkn),
                        Equals("OTPToken{ label=\"\", secret=[empty], digits=0, period=0, counter=[hidden], type=TOTP, algorithm=SHA1, icon=0, valid=false }"));

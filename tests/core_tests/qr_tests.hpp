@@ -1,4 +1,5 @@
 #include <bandit/bandit.h>
+#include <benchmark.hpp>
 
 #include <qr/decoder.hpp>
 #include <qr/encoder.hpp>
@@ -11,7 +12,7 @@ go_bandit([]{
         const bool decoding_support = QRCode::supportsDecoding();
         const std::string test_assets_dir = TEST_ASSETS_DIR;
 
-        it("[decode no such file]", [&]{
+        benchmark_it("[decode no such file]", [&]{
             QRCode::Error error;
             const auto res = QRCode::decode(test_assets_dir + "/nosuchfile.png", &error);
 
@@ -27,7 +28,7 @@ go_bandit([]{
             }
         });
 
-        it("[decode invalid file]", [&]{
+        benchmark_it("[decode invalid file]", [&]{
             QRCode::Error error;
             const auto res = QRCode::decode(test_assets_dir + "/invalid.png", &error);
 
@@ -43,7 +44,7 @@ go_bandit([]{
             }
         });
 
-        it("[decode]", [&]{
+        benchmark_it("[decode]", [&]{
             QRCode::Error error;
             const auto res = QRCode::decode(test_assets_dir + "/qrcode.png", &error);
 
@@ -59,7 +60,7 @@ go_bandit([]{
             }
         });
 
-        it("[encode]", [&]{
+        benchmark_it("[encode]", [&]{
             const auto res = QRCode::encode("hello world");
             AssertThat(res.size(), IsGreaterThanOrEqualTo(3000));
         });
