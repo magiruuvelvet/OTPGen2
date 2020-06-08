@@ -168,6 +168,11 @@ public:
     const std::string typeName() const;
 
     /**
+     * Returns the algorithm type as string.
+     */
+    const std::string algorithmName() const;
+
+    /**
      * Serializes the object into a portable binary sequence.
      *
      * To construct a OTPToken object again use the data constructor.

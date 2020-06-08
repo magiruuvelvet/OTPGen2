@@ -149,6 +149,11 @@ const std::string OTPToken::typeName() const
     return std::string(magic_enum::enum_name(this->_type));
 }
 
+const std::string OTPToken::algorithmName() const
+{
+    return std::string(magic_enum::enum_name(this->_algorithm));
+}
+
 const OTPToken::Data OTPToken::serialize() const
 {
     std::ostringstream buffer;
