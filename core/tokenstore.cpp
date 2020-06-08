@@ -18,6 +18,15 @@
 
 #include <magic_enum.hpp>
 
+/**
+ * FIXME: valgrind is complaining a lot about crypto++ here (390+ issues)
+ *        figure out if bug in crypto++ or my code
+ *        removing all crypto++ calls fixes those issues
+ *          - password hashing
+ *          - encryption and decryption
+ *        using smart pointers with crypto++ causes segfaults
+ */
+
 namespace
 {
 
