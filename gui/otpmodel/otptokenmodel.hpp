@@ -12,22 +12,28 @@ class OTPTokenModel : public QAbstractTableModel
     Q_OBJECT
 
 public:
-    OTPTokenModel(const std::vector<OTPToken> *tokens, QObject *parent = nullptr);
+    enum ViewMode
+    {
+        DisplayMode,
+        EditMode,
+    };
+
+    OTPTokenModel(const std::vector<OTPToken> *tokens, ViewMode = DisplayMode, QObject *parent = nullptr);
 
     enum {
         // Display Columns
-        ColActions = 0,
-        ColType = 1,
-        ColLabel = 2,
-        ColToken = 3, // generated token
+        ColActions  = 0,
+        ColType     = 1,
+        ColLabel    = 2,
+        ColToken    = 3, // generated token
 
         // Edit Columns
-        ColSecret = 4,
-        ColDigits = 5,
-        ColPeriod = 6,
-        ColCounter = 7,
+        ColSecret   = 4,
+        ColDigits   = 5,
+        ColPeriod   = 6,
+        ColCounter  = 7,
         ColAlgorithm = 8,
-        ColDelete = 9,
+        ColDelete   = 9,
     };
 
     /**
@@ -36,6 +42,12 @@ public:
      * displaying the underlying OTPToken list in the view.
      */
     void refresh();
+
+    inline void setViewMode(ViewMode viewMode)
+    {
+        this->viewMode = viewMode;
+        this->refresh();
+    }
 
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
@@ -55,8 +67,12 @@ public:
     }
 
 private:
+    friend class OTPTokenWidget;
+
     // this model may not modify the token list
     const std::vector<OTPToken> *tokens = nullptr;
+
+    ViewMode viewMode = DisplayMode;
 };
 
 #endif // OTPTOKENMODEL_HPP

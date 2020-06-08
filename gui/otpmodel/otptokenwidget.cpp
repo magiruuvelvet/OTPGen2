@@ -47,7 +47,6 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     connect(model, &OTPTokenModel::modelReset, this, &OTPTokenWidget::refresh);
 
     // setup the model properties
-    this->setColumnCount(model->columnCount());
     this->updateHeaderLabels();
 
     // setup minimum width constraints for columns
@@ -122,6 +121,8 @@ void OTPTokenWidget::setTouchScreenMode(bool enabled)
 
 void OTPTokenWidget::refresh()
 {
+    this->updateHeaderLabels();
+
     // clear previous content
     this->clearContents();
     this->setRowCount(0);
@@ -138,13 +139,30 @@ void OTPTokenWidget::refresh()
     this->setVerticalHeaderLabels(headerLabels);
 
     // icon size
-    unsigned int iconSize = 30;
-
     if (this->rowHeight == RowHeight::Mobile)
     {
-        iconSize = 68;
+        this->iconSize = 68;
+    }
+    else
+    {
+        this->iconSize = 30;
     }
 
+    if (model->viewMode == OTPTokenModel::DisplayMode)
+    {
+        this->setupDisplayMode();
+    }
+    else
+    {
+        this->setupEditMode();
+    }
+
+    // reapply the current filter
+    this->setFilter(this->filterPattern);
+}
+
+void OTPTokenWidget::setupDisplayMode()
+{
     // create cell widgets
     for (auto i = 0; i < model->rowCount(); ++i)
     {
@@ -199,9 +217,11 @@ void OTPTokenWidget::refresh()
         wlabel->setRowContainer(rowContainer);
         wtoken->setRowContainer(rowContainer);
     }
+}
 
-    // reapply the current filter
-    this->setFilter(this->filterPattern);
+void OTPTokenWidget::setupEditMode()
+{
+    // TODO
 }
 
 void OTPTokenWidget::makeAllRowsVisible()
@@ -214,6 +234,8 @@ void OTPTokenWidget::makeAllRowsVisible()
 
 void OTPTokenWidget::updateHeaderLabels()
 {
+    this->setColumnCount(model->columnCount());
+
     QStringList headerLabels;
     for (auto i = 0; i < model->columnCount(); ++i)
     {
@@ -226,7 +248,6 @@ void OTPTokenWidget::changeEvent(QEvent *event)
 {
     if (event->type() == QEvent::LanguageChange)
     {
-        this->updateHeaderLabels();
         model->refresh();
     }
 

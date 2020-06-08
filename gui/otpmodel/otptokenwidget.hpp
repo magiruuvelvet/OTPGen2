@@ -42,6 +42,9 @@ protected:
 private:
     OTPTokenModel *model = nullptr;
 
+    void setupDisplayMode();
+    void setupEditMode();
+
     void refresh();
     void makeAllRowsVisible();
     void updateHeaderLabels();
@@ -49,6 +52,7 @@ private:
     QString filterPattern;
     RowHeight rowHeight = RowHeight::Desktop;
     bool touchScreenMode = false;
+    unsigned int iconSize = 30;
 };
 
 #endif // OTPTOKENWIDGET_HPP
