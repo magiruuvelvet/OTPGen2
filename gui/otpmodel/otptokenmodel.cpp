@@ -44,19 +44,19 @@ QVariant OTPTokenModel::data(int row, int column, int role) const
         switch (column)
         {
             // [Show/Copy]
-            case 0:
+            case ColActions:
                 return {};
 
             // [Type]
-            case 1:
+            case ColType:
                 return QString::fromStdString(tokens->at(row).typeName());
 
             // [Icon/Label]
-            case 2:
+            case ColLabel:
                 return QString::fromStdString(tokens->at(row).label());
 
             // [Token]
-            case 3:
+            case ColToken:
                 return {};
         }
     }
@@ -76,10 +76,10 @@ QVariant OTPTokenModel::headerData(int section, Qt::Orientation orientation, int
     {
         switch (section)
         {
-            case 0: return tr("Actions", "otp"); // actions (show token, copy to clipboard) for current token
-            case 1: return tr("Type", "otp");    // OTP type: TOTP, HOTP, Steam
-            case 2: return tr("Label", "otp");   // OTP token label (example: GitHub)
-            case 3: return tr("Token", "otp");   // generated OTP token code (example: 123456)
+            case ColActions: return tr("Actions", "otp"); // actions (show token, copy to clipboard) for current token
+            case ColType:    return tr("Type", "otp");    // OTP type: TOTP, HOTP, Steam
+            case ColLabel:   return tr("Label", "otp");   // OTP token label (example: GitHub)
+            case ColToken:   return tr("Token", "otp");   // generated OTP token code (example: 123456)
         }
     }
 

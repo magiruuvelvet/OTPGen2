@@ -12,7 +12,7 @@ class OTPBaseWidget : public QWidget
 public:
     OTPBaseWidget(QWidget *parent = nullptr);
 
-    inline void setRowContainer(OTPTokenRowContainer rowContainer)
+    inline void setRowContainer(const OTPTokenRowContainer &rowContainer)
     {
         this->rowContainer = rowContainer;
     }

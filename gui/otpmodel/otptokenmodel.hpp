@@ -14,6 +14,22 @@ class OTPTokenModel : public QAbstractTableModel
 public:
     OTPTokenModel(const std::vector<OTPToken> *tokens, QObject *parent = nullptr);
 
+    enum {
+        // Display Columns
+        ColActions = 0,
+        ColType = 1,
+        ColLabel = 2,
+        ColToken = 3, // generated token
+
+        // Edit Columns
+        ColSecret = 4,
+        ColDigits = 5,
+        ColPeriod = 6,
+        ColCounter = 7,
+        ColAlgorithm = 8,
+        ColDelete = 9,
+    };
+
     /**
      * Refreshes the model when data has changed externally.
      * This model doesn't contain everything and is only aimed for

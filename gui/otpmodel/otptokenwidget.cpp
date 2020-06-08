@@ -10,11 +10,6 @@
 #include <QEvent>
 #include <QClipboard>
 
-#define COLUMN_ACTIONS  0
-#define COLUMN_TYPE     1
-#define COLUMN_LABEL    2
-#define COLUMN_TOKEN    3
-
 static const std::function<void(const OTPToken*)> copy_token_to_clipboard = [](const OTPToken *token){
     auto clipboard = QApplication::clipboard();
     clipboard->setText(QString::fromStdString(token->generate()));
@@ -71,7 +66,7 @@ OTPTokenWidget::OTPTokenWidget(OTPTokenModel *model, QWidget *parent)
     {
         this->setColumnWidth(i, minSizeContraints.at(i));
     }
-    this->setColumnWidth(COLUMN_ACTIONS, 70);
+    this->setColumnWidth(OTPTokenModel::ColActions, 70);
 
     // populate rows
     this->refresh();
@@ -98,8 +93,8 @@ bool OTPTokenWidget::setFilter(const QString &filter)
     for (auto i = 0; i < this->rowCount(); ++i)
     {
         bool match = false;
-        const auto type = model->data(i, COLUMN_TYPE).toString();
-        const auto label = model->data(i, COLUMN_LABEL).toString();
+        const auto type = model->data(i, OTPTokenModel::ColType).toString();
+        const auto label = model->data(i, OTPTokenModel::ColLabel).toString();
         if (filterRegex.match(type).hasMatch() ||
             filterRegex.match(label).hasMatch())
         {
@@ -159,7 +154,7 @@ void OTPTokenWidget::refresh()
         rowContainer.obj = token;
 
         // token actions
-        this->setCellWidget(i, COLUMN_ACTIONS,
+        this->setCellWidget(i, OTPTokenModel::ColActions,
                             new ActionsDelegate(token, this));
 
         // token display type
@@ -170,31 +165,31 @@ void OTPTokenWidget::refresh()
             case OTPToken::Steam: typeIcon = ":/logos/steam.svgz"; break;
         }
 
-        this->setCellWidget(i, COLUMN_TYPE,
-                            new LabelWithIconDelegate(model->data(i, COLUMN_TYPE).toString(), typeIcon, QSize(16, 16), this));
-        this->cellWidget(i, COLUMN_TYPE)->layout()->setSpacing(8);
-        this->cellWidget(i, COLUMN_TYPE)->layout()->setContentsMargins(8, 0, 8, 0);
+        this->setCellWidget(i, OTPTokenModel::ColType,
+                            new LabelWithIconDelegate(model->data(i, OTPTokenModel::ColType).toString(), typeIcon, QSize(16, 16), this));
+        this->cellWidget(i, OTPTokenModel::ColType)->layout()->setSpacing(8);
+        this->cellWidget(i, OTPTokenModel::ColType)->layout()->setContentsMargins(8, 0, 8, 0);
 
         // token label and icon
         const QByteArray icon(token->icon().data(), token->icon().size());
-        this->setCellWidget(i, COLUMN_LABEL,
-                            new LabelWithIconDelegate(model->data(i, COLUMN_LABEL).toString(), icon, QSize(iconSize, iconSize), this));
+        this->setCellWidget(i, OTPTokenModel::ColLabel,
+                            new LabelWithIconDelegate(model->data(i, OTPTokenModel::ColLabel).toString(), icon, QSize(iconSize, iconSize), this));
 
         // generated token
-        this->setCellWidget(i, COLUMN_TOKEN,
+        this->setCellWidget(i, OTPTokenModel::ColToken,
                             new TokenDelegate(token, this));
 
         if (this->touchScreenMode)
         {
-            qobject_cast<LabelWithIconDelegate*>(this->cellWidget(i, COLUMN_LABEL))->setClickCallback(&copy_token_to_clipboard);
-            qobject_cast<TokenDelegate*>(this->cellWidget(i, COLUMN_TOKEN))->setGeneratedTokenVisibilityOnClick(true);
+            qobject_cast<LabelWithIconDelegate*>(this->cellWidget(i, OTPTokenModel::ColLabel))->setClickCallback(&copy_token_to_clipboard);
+            qobject_cast<TokenDelegate*>(this->cellWidget(i, OTPTokenModel::ColToken))->setGeneratedTokenVisibilityOnClick(true);
         }
 
         // setup row pointers for easy access across the entire row
-        auto waction = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_ACTIONS));
-        auto wtype = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TYPE));
-        auto wlabel = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_LABEL));
-        auto wtoken = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, COLUMN_TOKEN));
+        auto waction = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, OTPTokenModel::ColActions));
+        auto wtype = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, OTPTokenModel::ColType));
+        auto wlabel = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, OTPTokenModel::ColLabel));
+        auto wtoken = qobject_cast<OTPBaseWidget*>(this->cellWidget(i, OTPTokenModel::ColToken));
         rowContainer.action = waction;
         rowContainer.type = wtype;
         rowContainer.label = wlabel;
