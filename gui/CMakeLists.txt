@@ -77,7 +77,7 @@ else()
 endif()
 
 # target must be created AFTER Qt cmake was run and automoc enabled
-CreateTarget(${CURRENT_TARGET} EXECUTABLE ${CURRENT_TARGET_NAME} 20)
+CreateTarget(${CURRENT_TARGET} EXECUTABLE ${CURRENT_TARGET_NAME} C++ 20)
 
 # append resource files
 add_dependencies(${CURRENT_TARGET} GenerateEmbeddedTranslations GenerateEmbeddedAssets)

@@ -4,7 +4,7 @@ set(CURRENT_TARGET_INTERFACE "${CURRENT_TARGET}_interface")
 
 message(STATUS "Configuring ${CURRENT_TARGET}...")
 
-CreateTarget(${CURRENT_TARGET} SHARED ${CURRENT_TARGET_NAME} 20)
+CreateTarget(${CURRENT_TARGET} SHARED ${CURRENT_TARGET_NAME} C++ 20)
 
 # cereal
 set(BUNDLED_CEREAL ON CACHE BOOL "Use the bundled cereal header-only library.")
