@@ -1,8 +1,5 @@
 set(CURRENT_TARGET "core")
 set(CURRENT_TARGET_NAME "libotpgen")
-set(CURRENT_TARGET_INTERFACE "${CURRENT_TARGET}_interface")
-
-message(STATUS "Configuring ${CURRENT_TARGET}...")
 
 CreateTarget(${CURRENT_TARGET} SHARED ${CURRENT_TARGET_NAME} C++ 20)
 
@@ -69,9 +66,3 @@ target_link_libraries(${CURRENT_TARGET}
         magic_enum
         fmt
 )
-
-add_library(${CURRENT_TARGET_INTERFACE} INTERFACE)
-target_include_directories(${CURRENT_TARGET_INTERFACE} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}")
-target_link_libraries(${CURRENT_TARGET_INTERFACE} INTERFACE ${CURRENT_TARGET})
-
-message(STATUS "Configured ${CURRENT_TARGET}.")

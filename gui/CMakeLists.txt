@@ -1,8 +1,5 @@
 set(CURRENT_TARGET "gui")
 set(CURRENT_TARGET_NAME "otpgen")
-set(CURRENT_TARGET_INTERFACE "${CURRENT_TARGET}_interface")
-
-message(STATUS "Configuring ${CURRENT_TARGET}...")
 
 # Qt
 find_package(Qt5Core REQUIRED)
@@ -96,8 +93,6 @@ target_link_libraries(${CURRENT_TARGET}
         Qt5::Gui
         Qt5::Widgets
     PRIVATE
-        core_interface
+        libs::core
         fmt
 )
-
-message(STATUS "Configured ${CURRENT_TARGET}.")
